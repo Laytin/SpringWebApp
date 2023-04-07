@@ -2,7 +2,7 @@ package com.laytin.SpringWebApp.models;
 
 import java.util.List;
 
-public class User {
+public class Customer {
     private int id;
     private String username;
     private String password;

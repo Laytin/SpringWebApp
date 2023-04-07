@@ -7,7 +7,7 @@ import java.util.List;
 public class Order {
     private int id;
     private List<OrderProduct> products; //one order many orderProducts
-    private User user;
+    private Customer customer;
     private Address address;
     private OrderState status;
     @Transient

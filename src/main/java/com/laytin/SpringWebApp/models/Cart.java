@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Cart {
     private int id;
-    private User user; // one user one cart
+    private Customer customer; // one user one cart
     private List<CartProduct> products; //one cart many products
     @Transient
     private int total;
