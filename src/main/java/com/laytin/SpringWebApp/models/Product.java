@@ -1,7 +1,7 @@
 package com.laytin.SpringWebApp.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 import java.util.List;
 
@@ -26,11 +26,11 @@ public class Product {
     private String color;
 
     @NotEmpty
-    @Column(name="color")
+    @Column(name="size")
     private String size;
 
     @NotEmpty
-    @Column(name="color")
+    @Column(name="price")
     private int price;
 
     @Transient

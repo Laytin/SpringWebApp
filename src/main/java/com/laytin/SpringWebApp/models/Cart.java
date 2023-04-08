@@ -1,7 +1,7 @@
 package com.laytin.SpringWebApp.models;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 @Entity
 @Table(name = "cart")
