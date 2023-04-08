@@ -17,4 +17,10 @@ public class CustomerService {
     public CustomerService(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
+    public Customer getCustomerById(int id){
+        return customerRepository.findById(id).orElse(null);
+    }
+    public Customer getCustomerByUsernameOrEmail(String usernameOrEmail){
+        return customerRepository.findByEmailOrUsername(usernameOrEmail,usernameOrEmail).orElse(null);
+    }
 }
