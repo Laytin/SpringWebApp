@@ -4,30 +4,30 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
 @Entity
-@Table(name = "cartproduct")
-public class CartProduct {
+@Table(name = "ordproduct")
+public class OrdProduct {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id", referencedColumnName = "id")
-    private Cart cart; // many CartProducts one cart
+    @JoinColumn(name = "ord_id",referencedColumnName = "id")
+    private Ord ord; //many products one order
 
     @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
     @NotEmpty
-    @Column(name ="quantity")
+    @Column(name="quantity")
     private int quantity;
 
-    public CartProduct() {
+    public OrdProduct() {
     }
 
-    public CartProduct(Cart cart, Product product, int quantity) {
-        this.cart = cart;
+    public OrdProduct(Ord ord, Product product, int quantity) {
+        this.ord = ord;
         this.product = product;
         this.quantity = quantity;
     }
@@ -40,12 +40,12 @@ public class CartProduct {
         this.id = id;
     }
 
-    public Cart getCart() {
-        return cart;
+    public Ord getOrd() {
+        return ord;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setOrd(Ord ord) {
+        this.ord = ord;
     }
 
     public Product getProduct() {
