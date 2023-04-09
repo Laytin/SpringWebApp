@@ -10,7 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class CustomerService {
-
+    //one service one controller.
+    //one service many repository
     private final CustomerRepository customerRepository;
 
     @Autowired
