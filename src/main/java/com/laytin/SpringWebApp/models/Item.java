@@ -26,9 +26,8 @@ public class Item {
     public Item() {
     }
 
-    public Item(String name, List<Product> products) {
+    public Item(String name) {
         this.name = name;
-        this.products = products;
     }
 
     public int getId() {
@@ -53,5 +52,11 @@ public class Item {
 
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+    public void addProduct(Product product){
+        products.add(product);
+    }
+    public void removeProduct(Product product){
+        products.remove(product);
     }
 }

@@ -24,10 +24,8 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Customer customer, List<CartProduct> cartproducts, int total) {
+    public Cart(Customer customer, int total) {
         this.customer = customer;
-        this.cartproducts = cartproducts;
-        this.total = total;
     }
 
     public int getId() {
@@ -60,5 +58,12 @@ public class Cart {
 
     public void setTotal(int total) {
         this.total = total;
+    }
+
+    public void addToCart(CartProduct product){
+        cartproducts.add(product);
+    }
+    public void removeFrom(CartProduct product){
+        cartproducts.remove(product);
     }
 }

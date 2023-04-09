@@ -39,12 +39,11 @@ public class Product {
     public Product() {
     }
 
-    public Product(Item item, String color, String size, int price, List<String> imageURLs) {
+    public Product(Item item, String color, String size, int price) {
         this.item = item;
         this.color = color;
         this.size = size;
         this.price = price;
-        this.imageURLs = imageURLs;
     }
 
     public int getId() {

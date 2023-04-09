@@ -40,13 +40,10 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(String username, String password, String email, List<Address> addresses, List<Ord> ords, Cart cart) {
+    public Customer(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.addresses = addresses;
-        this.ords = ords;
-        this.cart = cart;
     }
 
     public int getId() {
