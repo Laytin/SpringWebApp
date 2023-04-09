@@ -8,15 +8,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping("/user")
 public class CustomerController {
     private final CustomerService customerService;
-    private final OrdService ordService;
     @Autowired
-    public CustomerController(CustomerService customerService, OrdService ordService) {
+    public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
-        this.ordService = ordService;
     }
+    //Show User profile with info and buttons(my address, my orders, my cart)
     @GetMapping
     public String index(){
         return "hello";
