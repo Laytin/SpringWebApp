@@ -103,4 +103,8 @@ public class Ord {
     public void setTotal(int total) {
         this.total = total;
     }
+    public void calculateTotal(){
+        total=0;
+        ordproducts.stream().forEach(ordProduct -> {total+=ordProduct.getProduct().getPrice()*ordProduct.getQuantity();});
+    }
 }
