@@ -37,13 +37,17 @@ public class Customer {
     @OneToOne(mappedBy = "customer")
     private Cart cart; // one user one cart
 
+    @Column(name = "customerRole")
+    @Enumerated(EnumType.STRING)
+    private CustomerRole customerRole;
     public Customer() {
     }
 
-    public Customer(String username, String password, String email) {
+    public Customer(String username, String password, String email, CustomerRole customerRole) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.customerRole = customerRole;
     }
 
     public int getId() {
@@ -101,4 +105,12 @@ public class Customer {
     public void setCart(Cart cart) {
         this.cart = cart;
     }
+    public CustomerRole getCustomerRole() {
+        return customerRole;
+    }
+
+    public void setCustomerRole(CustomerRole customerRole) {
+        this.customerRole = customerRole;
+    }
+
 }
