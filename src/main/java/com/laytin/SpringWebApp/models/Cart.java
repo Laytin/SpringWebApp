@@ -24,7 +24,7 @@ public class Cart {
     public Cart() {
     }
 
-    public Cart(Customer customer, int total) {
+    public Cart(Customer customer) {
         this.customer = customer;
     }
 

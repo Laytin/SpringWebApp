@@ -1,5 +1,7 @@
 package com.laytin.SpringWebApp.models;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
@@ -34,7 +36,9 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     private List<Ord> ords; //one user many orders
 
+
     @OneToOne(mappedBy = "customer")
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private Cart cart; // one user one cart
 
     @Column(name = "customerRole")
