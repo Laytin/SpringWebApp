@@ -33,6 +33,13 @@ public class CustomerService {
     public Customer getCustomerByUsernameOrEmail(String usernameOrEmail){
         return customerRepository.findByEmailOrUsername(usernameOrEmail,usernameOrEmail).orElse(null);
     }
+    public Customer getCurrentCustomer(){
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal() == null)
+            return null;
+        return customerRepository.findByUsername(((Customer)authentication.getPrincipal()).getUsername()).orElse(null);
+    }
     @Transactional
     public void createCustomer(Customer customer){
         Customer newCustomer = customer;
