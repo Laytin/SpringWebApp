@@ -7,8 +7,12 @@ import com.laytin.SpringWebApp.repositories.CartRepository;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,19 +42,16 @@ public class CustomerService {
         customerRepository.save(newCustomer);
     }
     @Transactional
-    //@PreAuthorize("#customer.username == authentication.principal.username")
+    @PreAuthorize("hasRole('ROLE_USER')") //grants that user is logged in and it's his userinfo
     public void updateCustomer(Customer customer){
-
-        Customer updated = customerRepository.findById(customer.getId()).get();
-        if(!customer.getCustomerRole().equals(updated.getCustomerRole())){
-            //call exc
-            //if try to change role from user service, not administrator
-            return;
-        }
-        customer.setId(updated.getId());
-        customer.setCart(updated.getCart());
-        customer.setAddresses(updated.getAddresses());
-        customer.setOrds(updated.getOrds());
+        Customer updated = customerRepository.findByUsername(
+                ((Customer)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()
+        ).get();
+        customer.setId(updated.getId()); //same id for jpa
+        customer.setUsername(updated.getUsername()); //same username (don't give possibility to changing em)
+        customer.setCart(updated.getCart()); // to avoid binding errors
+        customer.setAddresses(updated.getAddresses());// to avoid binding errors
+        customer.setOrds(updated.getOrds());// to avoid binding errors
 
         customerRepository.save(customer);
     }
