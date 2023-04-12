@@ -70,7 +70,7 @@ public class OrdService {
             p.setOrd(newOrder);
             p.setQuantity(cartProduct.getQuantity());
         });
-        newOrder.setOrderedAt(LocalDateTime.now());
+        newOrder.setOrderedAt(new Date());
         newOrder.setOrdproducts(ordProducts);
         newOrder.setAddress(address);
         newOrder.setStatus(OrderState.COLLECTING_ORDER);

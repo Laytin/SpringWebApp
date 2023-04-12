@@ -17,26 +17,24 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ItemRepository itemRepository;
-    private final ProductDAO productDAO;
     @Autowired
-    public ProductService(ProductRepository productRepository, ItemRepository itemRepository, ProductDAO productDAO) {
+    public ProductService(ProductRepository productRepository, ItemRepository itemRepository) {
         this.productRepository = productRepository;
         this.itemRepository = itemRepository;
-        this.productDAO = productDAO;
     }
     ////////////////////////////////////////////////////////////////
     public List<Product> getProductList(int page,int perpage){
-        return productRepository.findByQuantityGreaterThanAndOrderByIdDesc(0, PageRequest.of(page,perpage));
+        return productRepository.findAll( PageRequest.of(page,perpage)).getContent();
     }
     public List<Product> getProductListSortBy(int page,int perpage, String sortBy){
-        return productRepository.findByQuantityGreaterThanAndOrderByIdDesc(0, PageRequest.of(page,perpage, Sort.by(sortBy)));
+        return productRepository.findAll( PageRequest.of(page,perpage, Sort.by(sortBy))).getContent();
     }
 
     public List<Product> searchProducts(String searchQuest, int page,int perpage){
-        return productDAO.getSearchProducts(searchQuest,page,perpage);
+        return null;//productDAO.getSearchProducts(searchQuest,page,perpage);
     }
     public List<Product> searchProductsSortBy(String searchQuest, int page,int perpage, String sortBy){
-        return productDAO.getSearchProducts(searchQuest,page,perpage);
+        return null;//productDAO.getSearchProducts(searchQuest,page,perpage);
     }
 
     //get product list
