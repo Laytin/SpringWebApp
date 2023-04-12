@@ -33,17 +33,23 @@ public class Product {
     @Column(name="price")
     private int price;
 
+
+    @NotEmpty
+    @Column(name="quantity")
+    private int quantity;
+
     @Transient
     private List<String> imageURLs;
 
     public Product() {
     }
 
-    public Product(Item item, String color, String size, int price) {
+    public Product(Item item, String color, String size, int price, int quantity) {
         this.item = item;
         this.color = color;
         this.size = size;
         this.price = price;
+        this.quantity = quantity;
     }
 
     public int getId() {
@@ -93,4 +99,12 @@ public class Product {
     public void setImageURLs(List<String> imageURLs) {
         this.imageURLs = imageURLs;
     }
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
 }

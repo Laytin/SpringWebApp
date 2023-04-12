@@ -6,12 +6,15 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "customer")
-public class Customer {
+public class Customer implements Serializable {
 
+
+    private static final long serialVersionUID = 1L;
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,12 +41,12 @@ public class Customer {
 
 
     @OneToOne(mappedBy = "customer")
-    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Cart cart; // one user one cart
 
-    @Column(name = "customerRole")
+    @Column(name = "customer_Role")
     @Enumerated(EnumType.STRING)
-    private CustomerRole customerRole;
+    private CustomerRole customer_Role;
     public Customer() {
     }
 
@@ -51,7 +54,7 @@ public class Customer {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.customerRole = customerRole;
+        this.customer_Role = customerRole;
     }
 
     public int getId() {
@@ -115,12 +118,28 @@ public class Customer {
     public void setCart(Cart cart) {
         this.cart = cart;
     }
-    public CustomerRole getCustomerRole() {
-        return customerRole;
+
+    public CustomerRole getCustomer_Role() {
+        return customer_Role;
     }
 
-    public void setCustomerRole(CustomerRole customerRole) {
-        this.customerRole = customerRole;
+    public void setCustomer_Role(CustomerRole customer_Role) {
+        this.customer_Role = customer_Role;
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", addresses=" + addresses +
+                ", ords=" + ords +
+                ", cart=" + cart +
+                ", customer_Role=" + customer_Role +
+                '}';
+    }
+
 
 }

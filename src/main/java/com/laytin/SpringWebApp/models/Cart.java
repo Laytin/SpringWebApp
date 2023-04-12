@@ -1,10 +1,11 @@
 package com.laytin.SpringWebApp.models;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 @Entity
 @Table(name = "cart")
-public class Cart {
+public class Cart implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +17,6 @@ public class Cart {
 
     @OneToMany(mappedBy = "cart")
     private List<CartProduct> cartproducts; //one cart many products
-
     @Transient
     private int total;
 
@@ -69,4 +69,14 @@ public class Cart {
         total  = 0;
         cartproducts.forEach(p -> total += (p.getProduct().getPrice()*p.getQuantity()));
     }
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", customer=" + customer +
+                ", cartproducts=" + cartproducts +
+                ", total=" + total +
+                '}';
+    }
+
 }

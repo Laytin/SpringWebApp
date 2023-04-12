@@ -32,7 +32,7 @@ public class Ord {
     @NotEmpty
     @Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
-    private LocalDateTime orderedAt;
+    private Date orderedAt;
 
     @Transient
     private int total;
@@ -40,7 +40,7 @@ public class Ord {
     public Ord() {
     }
 
-    public Ord(List<OrdProduct> ordproducts, Customer customer, Address address, OrderState status, LocalDateTime orderedAt, int total) {
+    public Ord(List<OrdProduct> ordproducts, Customer customer, Address address, OrderState status, Date orderedAt, int total) {
         this.ordproducts = ordproducts;
         this.customer = customer;
         this.address = address;
@@ -89,11 +89,11 @@ public class Ord {
         this.status = status;
     }
 
-    public LocalDateTime  getOrderedAt() {
+    public Date  getOrderedAt() {
         return orderedAt;
     }
 
-    public void setOrderedAt(LocalDateTime  orderedAt) {
+    public void setOrderedAt(Date  orderedAt) {
         this.orderedAt = orderedAt;
     }
 
