@@ -10,7 +10,7 @@ import java.util.List;
 
 @Component
 public class ProductDAO {
-    private final EntityManager entityManager;
+/*    private final EntityManager entityManager;
     @Autowired
     public ProductDAO(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -24,5 +24,5 @@ public class ProductDAO {
                 "JOIN ( Item on item_id = item.id)" +
                 "where item.name Like 'Nike%'\n").setFirstResult(start).setMaxResults(end).list();
         return result;
-    }
+    }*/
 }
