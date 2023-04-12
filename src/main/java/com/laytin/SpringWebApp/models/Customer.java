@@ -93,6 +93,12 @@ public class Customer {
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
+    public void addAddress(Address address) {
+        this.addresses.add(address);
+    }
+    public void removeAddress(Address address) {
+        this.addresses.remove(address);
+    }
 
     public List<Ord> getOrds() {
         return ords;
