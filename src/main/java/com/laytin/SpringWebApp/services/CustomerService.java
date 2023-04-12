@@ -42,11 +42,10 @@ public class CustomerService {
     }
     @Transactional
     public void createCustomer(Customer customer){
-        Customer newCustomer = customer;
-        Cart ourcart = new Cart(newCustomer);
+        Cart ourcart = new Cart(customer);
         //good practice of 2ways binding
-        newCustomer.setCart(ourcart);
-        customerRepository.save(newCustomer);
+        customer.setCart(ourcart);
+        customerRepository.save(customer);
     }
     @Transactional
     @PreAuthorize("hasRole('ROLE_USER')") //grants that user is logged in and it's his userinfo
