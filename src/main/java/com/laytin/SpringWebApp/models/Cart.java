@@ -1,7 +1,6 @@
 package com.laytin.SpringWebApp.models;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import java.util.List;
 @Entity
 @Table(name = "cart")
@@ -65,5 +64,9 @@ public class Cart {
     }
     public void removeFrom(CartProduct product){
         cartproducts.remove(product);
+    }
+    public void calculateTotal(){
+        total  = 0;
+        cartproducts.forEach(p -> total += (p.getProduct().getPrice()*p.getQuantity()));
     }
 }
