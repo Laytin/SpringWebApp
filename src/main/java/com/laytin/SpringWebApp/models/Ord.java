@@ -3,6 +3,7 @@ package com.laytin.SpringWebApp.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 @Entity
@@ -31,7 +32,7 @@ public class Ord {
     @NotEmpty
     @Column(name = "date")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date orderedAt;
+    private LocalDateTime orderedAt;
 
     @Transient
     private int total;
@@ -39,7 +40,7 @@ public class Ord {
     public Ord() {
     }
 
-    public Ord(List<OrdProduct> ordproducts, Customer customer, Address address, OrderState status, Date orderedAt, int total) {
+    public Ord(List<OrdProduct> ordproducts, Customer customer, Address address, OrderState status, LocalDateTime orderedAt, int total) {
         this.ordproducts = ordproducts;
         this.customer = customer;
         this.address = address;
@@ -88,11 +89,11 @@ public class Ord {
         this.status = status;
     }
 
-    public Date getOrderedAt() {
+    public LocalDateTime  getOrderedAt() {
         return orderedAt;
     }
 
-    public void setOrderedAt(Date orderedAt) {
+    public void setOrderedAt(LocalDateTime  orderedAt) {
         this.orderedAt = orderedAt;
     }
 
