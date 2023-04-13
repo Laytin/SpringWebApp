@@ -6,6 +6,7 @@ import com.laytin.SpringWebApp.models.Customer;
 import com.laytin.SpringWebApp.models.CustomerRole;
 import com.laytin.SpringWebApp.repositories.CartRepository;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
+import com.laytin.SpringWebApp.security.CustomerDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -29,18 +30,12 @@ public class CustomerService {
         this.cartRepository = cartRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    public Customer getCustomerById(int id){
-        return customerRepository.findById(id).orElse(null);
-    }
-    public Customer getCustomerByUsernameOrEmail(String usernameOrEmail){
-        return customerRepository.findByEmailOrUsername(usernameOrEmail,usernameOrEmail).orElse(null);
-    }
     public Customer getCurrentCustomer(){
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
         if(authentication.getPrincipal() == null)
             return null;
-        return customerRepository.findByUsername(((Customer)authentication.getPrincipal()).getUsername()).orElse(null);
+        return customerRepository.findByUsername(((CustomerDetails)authentication.getPrincipal()).getCustomer().getUsername()).orElse(null);
     }
     @Transactional
     public void createCustomer(Customer customer){
@@ -53,16 +48,17 @@ public class CustomerService {
     }
     @Transactional
     @PreAuthorize("hasRole('ROLE_USER')") //grants that user is logged in and it's his userinfo
-    public void updateCustomer(Customer customer){
+    public void updateCurrentCustomer(Customer customer){
         Customer updated = customerRepository.findByUsername(
-                ((Customer)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()
+                ((CustomerDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()
         ).get();
         customer.setId(updated.getId()); //same id for jpa
         customer.setUsername(updated.getUsername()); //same username (don't give possibility to changing em)
         customer.setCart(updated.getCart()); // to avoid binding errors
         customer.setAddresses(updated.getAddresses());// to avoid binding errors
         customer.setOrds(updated.getOrds());// to avoid binding errors
-
+        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        customer.setCustomer_Role(CustomerRole.ROLE_USER);
         customerRepository.save(customer);
     }
 }

@@ -2,15 +2,16 @@ package com.laytin.SpringWebApp.controllers;
 
 import com.laytin.SpringWebApp.models.Customer;
 import com.laytin.SpringWebApp.services.CustomerService;
-import com.laytin.SpringWebApp.services.OrdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @Controller
+@RequestMapping()
 public class CustomerController {
     private final CustomerService customerService;
     @Autowired
@@ -18,10 +19,6 @@ public class CustomerController {
         this.customerService = customerService;
     }
     //Show User profile with info and buttons(my address, my orders, my cart)
-    @GetMapping("/user/")
-    public String index(){
-        return "hello";
-    }
     @GetMapping("auth/login")
     public String login(){
         return "auth/login";
@@ -39,4 +36,23 @@ public class CustomerController {
 
         return "redirect:/auth/login";
     }
+
+    @GetMapping("user")
+    public String index(Model model){
+        model.addAttribute("customer", customerService.getCurrentCustomer());
+        return "/user/user";
+    }
+
+    @GetMapping("user/edit")
+    public String editUser(Model model){
+        model.addAttribute("customer", customerService.getCurrentCustomer());
+        return "/user/edit";
+    }
+    @PatchMapping("user/edit")
+    public String updateUser(@ModelAttribute("customer") @Valid Customer customer, BindingResult errors){
+        System.out.println("asd");
+        customerService.updateCurrentCustomer(customer);
+        return  "redirect:/user";
+    }
+    ///
 }
