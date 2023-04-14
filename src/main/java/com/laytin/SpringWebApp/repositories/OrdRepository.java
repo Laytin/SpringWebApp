@@ -13,6 +13,6 @@ import java.util.List;
 
 @Repository
 public interface OrdRepository extends JpaRepository<Ord, Integer> {
-    List<Ord> findOrdByCustomer(Customer customer, Pageable pageable);
+    List<Ord> findByCustomerIdOrderByIdDesc(Integer id, Pageable pageable);
     Ord findOrdById(Integer id);
 }

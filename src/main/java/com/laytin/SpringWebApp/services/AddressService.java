@@ -25,8 +25,6 @@ public class AddressService {
         this.addressRepository = addressRepository;
         this.customerRepository = customerRepository;
     }
-
-
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<Address> getAddresses(){
         Customer customer  = customerRepository.findByUsername(getPrincipialCustomer().getUsername()).get();

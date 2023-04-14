@@ -4,12 +4,11 @@
 <head>
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
-  <title>Addresses</title>
+  <title>Order #</title>
   <!-- Bootstrap CSS -->
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
   <!-- Font Awesome CSS -->
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css'>
-  <link rel='stylesheet' href='user.css'>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
 
   <style>
@@ -196,35 +195,36 @@
 <div class="leftContainer">
   <div class="button" id="but">
     <div id="slide"></div>
-    <a href="/addresses">Addresses</a>
+    <a href="/address">Addresses</a>
   </div>
 
   <div class="button" id="but">
     <div id="slide"></div>
-    <a href="/orders">Orders</a>
+    <a href="/order">Orders</a>
   </div>
 
 </div>
 
 <div class="mainContainer">
-  <h3>Addresses</h3>
-  <div class="inline" th:if="${!addresses.isEmpty()}" th:each="adr : ${addresses}">
-    <div class="addresscard">
-      <p th:text="${adr.getFirstname() + ' ' + adr.getLastname() + ', ' + adr.getPhoneNumber() + ', '+ adr.getZipcode()}">Alexander Alexander, +375292929299, zipcode</p>
-      <br><br>
-      <p th:text="${adr.getCountry() + ', ' + adr.getCity() + ', ' + adr.getState()}">Country, City, State</p>
+  <h3 th:text="'Order #'+${order.getId()}">VALUE</h3>
+      <p th:text="'Date:'+${order.getOrderedAt()}"></p>
       <br>
-        <form th:method="GET" th:action="@{/address/{id}/edit(id=${adr.getId()})}" id="editform" style ='float: left; padding: 5px;'>
-          <a href="#" onclick="document.getElementById('editform').submit()"><b>Edit</b></a>
-        </form>
-        <form th:method="DELETE" th:action="@{/address/{id}(id=${adr.getId()})}" id="deleteform" style ='float: left; padding: 5px; padding-left: 25px;'>
-          <a href="#" onclick="document.getElementById('deleteform').submit()"><b>Delete</b></a>
-        </form>
-
+      <div th:each="pr : ${products}">
+        <p th:text="'Product:'+${pr.getName()} +', Color:'+${pr.getColor()}+', Quantity'+${pr.getQuantity()}"></p>
+        <br>
+      </div>
+  <p th:text="${address.getFirstname() + ' ' + address.getLastname() + ', ' + address.getPhoneNumber() + ', '+ address.getZipcode()}"></p>
+  <br>
+  <p th:text="${address.getCountry() + ', ' + address.getCity() + ', ' + address.getState()}"></p>
+    <br>
+      <p th:text="'Total:'+${order.getTotal()}"></p>
       <br>
-    </div>
-
-  </div>
+      <p th:text="'Status:'+${order.getStatus()}"></p>
+    <br>
+      <div class="button" id="but">
+        <div id="slide"></div>
+        <a href="javascript:history.back()">Back</a>
+      </div>
 </div>
 
 </body>

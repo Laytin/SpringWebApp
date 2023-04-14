@@ -1,5 +1,6 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
   <meta charset='utf-8'>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
@@ -183,11 +184,14 @@
 <div class="buttonCart" id="cart">
   <a href="/cart">Cart</a>
 </div>
-<div class="Profileinfo">
+<div class="Profileinfo" sec:authorize="isAuthenticated()">
   <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" width="30px" height="30px" display="inline-block">
-  <a href="/user" th:if="${address!=null}" th:text="${address.getCustomer().getUsername()}">Username</a>
+  <a href="/user" sec:authentication="name" >Username</a>
 </div>
 
+<div class="Profileinfo" sec:authorize="!isAuthenticated()">
+  <a href="/auth/login">Login</a>
+</div>
 <div class="leftContainer">
   <div class="button" id="but">
     <div id="slide"></div>

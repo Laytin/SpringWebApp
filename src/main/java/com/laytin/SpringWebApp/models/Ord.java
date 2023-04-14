@@ -1,5 +1,8 @@
 package com.laytin.SpringWebApp.models;
 
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
@@ -17,11 +20,12 @@ public class Ord {
     @OneToMany(mappedBy = "ord")
     private List<OrdProduct> ordproducts; //one order many orderProducts
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @LazyToOne(LazyToOneOption.NO_PROXY)
     @JoinColumn(name="address_id", referencedColumnName="id")
     private Address address;
 
@@ -30,7 +34,7 @@ public class Ord {
     private OrderState status;
 
     @NotEmpty
-    @Column(name = "date")
+    @Column(name = "orderedat")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderedAt;
 

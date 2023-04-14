@@ -4,6 +4,8 @@ import com.laytin.SpringWebApp.dao.OrdDAO;
 import com.laytin.SpringWebApp.models.*;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import com.laytin.SpringWebApp.repositories.OrdRepository;
+import com.laytin.SpringWebApp.security.CustomerDetails;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Order;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,30 +34,34 @@ public class OrdService {
         this.customerRepository = customerRepository;
         this.ordDAO = ordDAO;
     }
+    // TODO: fix n+1
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<Ord> getCustomerOrders(int page){
-        Customer principal =(Customer) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
-        Customer customer = customerRepository.findByUsername(principal.getUsername()).get();
-        return getCustomerOrders(customer,page);
-    }
-    private List<Ord> getCustomerOrders(Customer customer,int page){
-        if(page<1)
-            return getCustomerOrders(customer,1);
-        List<Ord> result =ordRepository.findOrdByCustomer(customer, PageRequest.of(page,10,Sort.by("takenAt")));
-        result.forEach(o -> o.calculateTotal());
-        return result;
+        int customerId =((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
+        List<Ord> orders = ordRepository.findByCustomerIdOrderByIdDesc(customerId, PageRequest.of(page,5));
+        orders.forEach(order -> order.calculateTotal());
+        return orders;
     }
     ////////////////////////////////////////////////////////////////
     @PreAuthorize("hasRole('ROLE_USER')")
     public Ord getOrder(int id){
-        Customer principal =(Customer) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
-        Customer customer = customerRepository.findByUsername(principal.getUsername()).get();
-        return customer.getOrds().stream().filter(ord -> ord.getId()==id).findFirst().orElse(null);
+        Customer principal =((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer();
+        Ord order = ordRepository.findOrdById(id);
+        if(order.getCustomer().getId()!=principal.getId()){
+            return null;
+        }
+        Hibernate.initialize(order.getOrdproducts()); // prepare for calculation
+        Hibernate.initialize(order.getAddress()); // prepare for calculation
+        order.calculateTotal();
+        return order;
+    }
+    public List<Product> getOrderProducts(Ord order){
+        return order.getOrdproducts().stream().map(p->p.getProduct()).collect(Collectors.toList());
     }
     ////////////////////////////////////////////////////////////////
     @PreAuthorize("hasRole('ROLE_USER')")
     public void createNewOrder(int addressId){
-        Customer principal =(Customer) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
+/*        Customer principal =(Customer) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
         Customer customer = customerRepository.findByUsername(principal.getUsername()).get();
         Address address = customer.getAddresses().stream().filter(adr-> adr.getId()==addressId).findFirst().orElse(null);
         List<CartProduct> cartProducts = customer.getCart().getCartproducts();
@@ -76,6 +83,6 @@ public class OrdService {
         newOrder.setStatus(OrderState.COLLECTING_ORDER);
         newOrder.setCustomer(customer);
 
-        ordRepository.save(newOrder);
+        ordRepository.save(newOrder);*/
     }
 }
