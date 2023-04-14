@@ -39,4 +39,14 @@ public class AddressController {
         addressService.deleteAddress(id);
         return "redirect:/address";
     }
+    @GetMapping("/new")
+    public String add(Model model){
+        model.addAttribute("address",new Address());
+        return "address/new";
+    }
+    @PostMapping()
+    public String add(@ModelAttribute("address") Address address){
+        addressService.addAddress(address);
+        return "redirect:/address";
+    }
 }

@@ -196,12 +196,12 @@
 <div class="leftContainer">
   <div class="button" id="but">
     <div id="slide"></div>
-    <a href="/addresses">Addresses</a>
+    <a href="/address">Addresses</a>
   </div>
 
   <div class="button" id="but">
     <div id="slide"></div>
-    <a href="/orders">Orders</a>
+    <a href="/order">Orders</a>
   </div>
 
 </div>
@@ -220,11 +220,16 @@
         <form th:method="DELETE" th:action="@{/address/{id}(id=${adr.getId()})}" id="deleteform" style ='float: left; padding: 5px; padding-left: 25px;'>
           <a href="#" onclick="document.getElementById('deleteform').submit()"><b>Delete</b></a>
         </form>
+      <div class="button" id="but">
+        <div id="slide"></div>
+        <a href="/address/new">New</a>
+      </div>
 
       <br>
     </div>
-
   </div>
+
+
 </div>
 
 </body>

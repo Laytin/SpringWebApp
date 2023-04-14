@@ -6,12 +6,15 @@ import com.laytin.SpringWebApp.repositories.AddressRepository;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import com.laytin.SpringWebApp.security.CustomerDetails;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +23,9 @@ import java.util.Optional;
 public class AddressService {
     private final AddressRepository addressRepository;
     private final CustomerRepository customerRepository;
+
+    @PersistenceContext
+    EntityManager entityManager;
     @Autowired
     public AddressService(AddressRepository addressRepository, CustomerRepository customerRepository) {
         this.addressRepository = addressRepository;
@@ -66,13 +72,10 @@ public class AddressService {
     @Transactional
     @PreAuthorize("hasRole('ROLE_USER')")
     public void addAddress(Address address){
-        Customer customerdb = getPrincipialCustomer(); //real db user
-        address.setCustomer(customerdb); //double side binding
-        customerdb.addAddress(address); //double side binding
+        Session session = entityManager.unwrap(Session.class);
+        address.setCustomer(session.load(Customer.class,getPrincipialCustomer().getId()));
         addressRepository.save(address);
-        customerRepository.save(customerdb);
     }
-
     private Customer getPrincipialCustomer(){
         return ((CustomerDetails)SecurityContextHolder. getContext(). getAuthentication().getPrincipal()).getCustomer();
     }
