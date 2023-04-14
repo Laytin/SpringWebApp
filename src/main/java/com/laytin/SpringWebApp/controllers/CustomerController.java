@@ -40,13 +40,13 @@ public class CustomerController {
     @GetMapping("user")
     public String index(Model model){
         model.addAttribute("customer", customerService.getCurrentCustomer());
-        return "/user/user";
+        return "user/index";
     }
 
     @GetMapping("user/edit")
     public String editUser(Model model){
         model.addAttribute("customer", customerService.getCurrentCustomer());
-        return "/user/edit";
+        return "user/edit";
     }
     @PatchMapping("user/edit")
     public String updateUser(@ModelAttribute("customer") @Valid Customer customer, BindingResult errors){
