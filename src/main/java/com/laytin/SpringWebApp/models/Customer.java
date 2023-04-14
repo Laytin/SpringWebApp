@@ -1,6 +1,8 @@
 package com.laytin.SpringWebApp.models;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -34,6 +36,7 @@ public class Customer implements Serializable {
     private String email;
 
     @OneToMany(mappedBy = "customer")
+    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
     private List<Address> addresses; // one user many addresses
 
     @OneToMany(mappedBy = "customer")
@@ -41,7 +44,7 @@ public class Customer implements Serializable {
 
 
     @OneToOne(mappedBy = "customer")
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     private Cart cart; // one user one cart
 
     @Column(name = "customer_Role")

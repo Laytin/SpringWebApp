@@ -1,5 +1,8 @@
 package com.laytin.SpringWebApp.models;
 
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -11,7 +14,7 @@ public class Cart implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToOne
+    @OneToOne()
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer; // one user one cart
 

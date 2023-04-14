@@ -33,18 +33,17 @@ public class Address {
     @Column(name = "lastname")
     private String lastname;
 
-    @NotEmpty
     @Column(name = "zipcode")
     private int zipcode;
 
     @NotEmpty
     @Column(name = "phonenumber")
-    private long phoneNumber;
+    private String phoneNumber;
 
     public Address() {
     }
 
-    public Address(Customer customer, String country, String city, String state, String firstname, String lastname, int zipcode, long phoneNumber) {
+    public Address(Customer customer, String country, String city, String state, String firstname, String lastname, int zipcode, String phoneNumber) {
         this.customer = customer;
         this.country = country;
         this.city = city;
@@ -119,11 +118,11 @@ public class Address {
         this.zipcode = zipcode;
     }
 
-    public long getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(long phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 }
