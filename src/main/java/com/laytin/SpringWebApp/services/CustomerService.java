@@ -36,7 +36,6 @@ public class CustomerService {
     }
     @Transactional
     public void createCustomer(Customer customer){
-        Cart ourcart = new Cart(customer);
         //good practice of 2ways binding
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         customer.setCustomer_Role(CustomerRole.ROLE_USER);
