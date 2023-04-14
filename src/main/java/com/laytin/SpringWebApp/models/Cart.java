@@ -6,21 +6,17 @@ import org.hibernate.annotations.LazyToOneOption;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-@Entity
-@Table(name = "cart")
+
 public class Cart implements Serializable {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
 
-    @OneToOne()
-    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+
     private Customer customer; // one user one cart
 
-    @OneToMany(mappedBy = "cart")
+
     private List<CartProduct> cartproducts; //one cart many products
-    @Transient
+
     private int total;
 
     public Cart() {

@@ -1,10 +1,10 @@
 package com.laytin.SpringWebApp.models;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
@@ -42,10 +42,8 @@ public class Customer implements Serializable {
     @OneToMany(mappedBy = "customer")
     private List<Ord> ords; //one user many orders
 
-
-    @OneToOne(mappedBy = "customer")
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE})
-    private Cart cart; // one user one cart
+    @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
+    private List<CartProduct> cartproducts;
 
     @Column(name = "customer_Role")
     @Enumerated(EnumType.STRING)
@@ -114,13 +112,6 @@ public class Customer implements Serializable {
         this.ords = ords;
     }
 
-    public Cart getCart() {
-        return cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
-    }
 
     public CustomerRole getCustomer_Role() {
         return customer_Role;
@@ -128,6 +119,14 @@ public class Customer implements Serializable {
 
     public void setCustomer_Role(CustomerRole customer_Role) {
         this.customer_Role = customer_Role;
+    }
+
+    public List<CartProduct> getCartproducts() {
+        return cartproducts;
+    }
+
+    public void setCartproducts(List<CartProduct> cartproducts) {
+        this.cartproducts = cartproducts;
     }
 
     @Override
@@ -139,10 +138,8 @@ public class Customer implements Serializable {
                 ", email='" + email + '\'' +
                 ", addresses=" + addresses +
                 ", ords=" + ords +
-                ", cart=" + cart +
+                ", cartproducts=" + cartproducts +
                 ", customer_Role=" + customer_Role +
                 '}';
     }
-
-
 }

@@ -12,8 +12,8 @@ public class CartProduct {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "cart_id", referencedColumnName = "id")
-    private Cart cart; // many CartProducts one cart
+    @JoinColumn(name = "customer_id", referencedColumnName = "id")
+    private Customer customer;
 
     @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
@@ -26,8 +26,8 @@ public class CartProduct {
     public CartProduct() {
     }
 
-    public CartProduct(Cart cart, Product product, int quantity) {
-        this.cart = cart;
+    public CartProduct(Customer customer, Product product, int quantity) {
+        this.customer = customer;
         this.product = product;
         this.quantity = quantity;
     }
@@ -40,12 +40,12 @@ public class CartProduct {
         this.id = id;
     }
 
-    public Cart getCart() {
-        return cart;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Product getProduct() {
