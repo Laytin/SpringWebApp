@@ -1,5 +1,9 @@
 package com.laytin.SpringWebApp.models;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
@@ -17,22 +21,17 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name="item_id",referencedColumnName = "id")
-    private Item item;
+    @NotEmpty
+    @Column(name = "name")
+    private String name;
 
     @NotEmpty
     @Column(name="color")
     private String color;
 
     @NotEmpty
-    @Column(name="size")
-    private String size;
-
-    @NotEmpty
     @Column(name="price")
     private int price;
-
 
     @NotEmpty
     @Column(name="quantity")
@@ -44,10 +43,9 @@ public class Product {
     public Product() {
     }
 
-    public Product(Item item, String color, String size, int price, int quantity) {
-        this.item = item;
+    public Product(String name, String color, int price, int quantity) {
+        this.name = name;
         this.color = color;
-        this.size = size;
         this.price = price;
         this.quantity = quantity;
     }
@@ -60,12 +58,12 @@ public class Product {
         this.id = id;
     }
 
-    public Item getItem() {
-        return item;
+    public String getName() {
+        return name;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getColor() {
@@ -76,20 +74,20 @@ public class Product {
         this.color = color;
     }
 
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
     public int getPrice() {
         return price;
     }
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public List<String> getImageURLs() {
@@ -99,15 +97,4 @@ public class Product {
     public void setImageURLs(List<String> imageURLs) {
         this.imageURLs = imageURLs;
     }
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-    public String getName(){
-        return item.getName();
-    }
-
 }
