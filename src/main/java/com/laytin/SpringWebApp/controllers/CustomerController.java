@@ -25,7 +25,6 @@ public class CustomerController {
     }
     @GetMapping("auth/registration")
     public String registrationPage(@ModelAttribute("customer") Customer customer) {
-        System.out.println("asd");
         return "auth/registration";
     }
     @PostMapping("auth/registration")
