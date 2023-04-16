@@ -54,5 +54,10 @@ public class CustomerController {
         customerService.updateCurrentCustomer(customer);
         return  "redirect:/user";
     }
+    @GetMapping
+    public String mainPage(){
+        return "redirect:/products";
+    }
     ///
+
 }
