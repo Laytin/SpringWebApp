@@ -59,30 +59,4 @@ public class OrdService {
         return order.getOrdproducts().stream().map(p->p.getProduct()).collect(Collectors.toList());
     }
     ////////////////////////////////////////////////////////////////
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public void createNewOrder(int addressId){
-/*        Customer principal =(Customer) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal();
-        Customer customer = customerRepository.findByUsername(principal.getUsername()).get();
-        Address address = customer.getAddresses().stream().filter(adr-> adr.getId()==addressId).findFirst().orElse(null);
-        List<CartProduct> cartProducts = customer.getCart().getCartproducts();
-
-        if(cartProducts ==null || address==null)
-            return;
-
-        List<OrdProduct> ordProducts = new ArrayList<OrdProduct>();
-        Ord newOrder = new Ord();
-        cartProducts.forEach(cartProduct -> {
-            OrdProduct p = new OrdProduct();
-            p.setProduct(cartProduct.getProduct());
-            p.setOrd(newOrder);
-            p.setQuantity(cartProduct.getQuantity());
-        });
-        newOrder.setOrderedAt(new Date());
-        newOrder.setOrdproducts(ordProducts);
-        newOrder.setAddress(address);
-        newOrder.setStatus(OrderState.COLLECTING_ORDER);
-        newOrder.setCustomer(customer);
-
-        ordRepository.save(newOrder);*/
-    }
 }
