@@ -187,9 +187,37 @@
         }
     </style>
     <script>
-        function val() {
-            d = document.getElementById("select_colors").value;
-            window.location.replace("/products/" + d.toString());
+        function sortId() {
+            var url = window.location.href;
+            var lst_temp = url.split('?');
+            if (!url.includes("?")) {
+                window.location.replace(url + "?sort=id&dir=asc");
+                return;
+            }
+            if (lst_temp[1].includes("id")) {
+                lst_temp[1].includes("asc") ?
+                    window.location.replace(lst_temp[0] + "?sort=id&dir=desc") :
+                    window.location.replace(lst_temp[0] + "?sort=id&dir=asc");
+            } else {
+                window.location.replace(lst_temp[0] + "?sort=id&dir=asc");
+            }
+        }
+
+
+        function sortColor() {
+            var url = window.location.href;
+            var lst_temp = url.split('?');
+            if (!url.includes("?")) {
+                window.location.replace(url + "?sort=price&dir=asc");
+                return;
+            }
+            if (lst_temp[1].includes("price")) {
+                lst_temp[1].includes("asc") ?
+                    window.location.replace(lst_temp[0] + "?sort=price&dir=desc") :
+                    window.location.replace(lst_temp[0] + "?sort=price&dir=asc");
+            } else {
+                window.location.replace(lst_temp[0] + "?sort=price&dir=asc");
+            }
         }
     </script>
 </head>
@@ -226,45 +254,32 @@
 </div>
 
 <div class="mainContainer">
-
-    <div th:if="${product!=null}">
-        <form th:method="POST" th:action="@{/products/addtocart}" th:object="${cartproduct}" id="formedit">
-            <input type="hidden" th:field="*{id}" id="id">
-            <h1 th:text="${product.getName()} +'('+${product.getColor()}+')'"></h1>
-
-            <div th:each="img :${product.getImageURLs()}">
-                <img th:src="${img}" width="30px" height="30px" display="inline-block">
-            </div>
-            <img th:src="${product.getImageURLs().get(0)}" width="100px" height="100px" display="inline-block">
-            <br>
-            <label for="select_colors">Choose a color:</label>
-            <select name="colors" id="select_colors" onchange="val()">
-                <option th:each="pr: ${avaibleColors}" th:value="${pr.getId()}" th:text="${pr.getColor()}"
-                        th:selected="${pr.getColor().equals(product.getColor())}">
-                </option>
-            </select>
-            <br>
-            <div th:if="${product.getQuantity()==0}">
-                <p style="color:red">OUT OF STOCK</p>
+    <h3>Cart</h3>
+    <br>
+    <br>
+        <div class="inline" th:if="${!cart.getCartproducts().isEmpty()}" th:each="pr : ${cart.getCartproducts()}">
+            <form th:method="PATCH" th:action="@{/cart/{id}(id=${pr.getId()})}" th:id="'CP'+ ${pr.getId()}">
+                <a th:href="@{/products/{id}(id=${pr.getProduct().getId()})}" th:text="${pr.getProduct().getName()} + ', ' +${pr.getProduct().getColor()}"></a>
                 <br>
-            </div>
-            <div th:if="${product.getQuantity()>0}">
-                <p th:text="'Stock:'+${product.getQuantity()}">23</p>
+                <div th:if="${pr.getProduct().getQuantity()>0}">
+                    <input type="number" th:attr="onclick=|document.getElementById('CP'+'${pr.getId()}').submit()|"  th:name="quantity"  min="1" th:max="${pr.getProduct().getQuantity()}" th:value="${pr.getQuantity()}"/>
+                </div>
+                <div th:if="${pr.getProduct().getQuantity()<1}">
+                    <p style="color:red">OUT OF STOCK</p>
+                    <input type="hidden" th:name="quantity"  th:value="0"/>
+                </div>
                 <br>
-            </div>
-            <h3 th:text="${product.getPrice()}"></h3>
-            <br>
+                <form th:method="DELETE" th:action="@{/cart/{id}(id=${pr.getId()})}">
+                    <input type="submit" value="Delete from cart"/>
+                </form>
+                <p>----------------------</p>
+            </form>
+        </div>
 
-            <input type="number" th:field="*{quantity}" id="quantity" min="1" th:max="${product.getQuantity()}" value="1"/>
-            <div class="button" id="but">
-                <div id="slide"></div>
-                <a href="#" onclick="document.getElementById('formedit').submit()">Add to cart</a>
-            </div>
-        </form>
-    </div>
 
-    <div th:if="${product==null}">
-        <h1>Oops. No existing product</h1>
+
+    <div class="inline" th:if="${cart.getCartproducts().isEmpty()}">
+        <h3>No result</h3>
     </div>
 </div>
 

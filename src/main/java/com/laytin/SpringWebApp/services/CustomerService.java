@@ -1,7 +1,6 @@
 package com.laytin.SpringWebApp.services;
 
 
-import com.laytin.SpringWebApp.models.Cart;
 import com.laytin.SpringWebApp.models.Customer;
 import com.laytin.SpringWebApp.models.CustomerRole;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
