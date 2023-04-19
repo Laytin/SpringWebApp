@@ -45,5 +45,25 @@ public class CartService {
         int customerId = ((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
         return addressRepository.findByCustomerId(customerId);
     }
+
+    public void updateCartProduct(int id, CartProduct cartProduct) {
+        CartProduct cp = cartProductRepository.findById(id).get();
+        if(cp.getQuantity()==cartProduct.getQuantity())
+            return;
+
+        Hibernate.initialize(cp.getCustomer());
+        if(((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId() != cp.getCustomer().getId())
+            return;
+
+        cp.setQuantity(Math.min(cartProduct.getQuantity(),cp.getProduct().getQuantity()));
+        cartProductRepository.save(cp);
+    }
+    public void deleteCartProduct(int id){
+        CartProduct cp = cartProductRepository.findById(id).get();
+        Hibernate.initialize(cp.getCustomer());
+        if(((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId() != cp.getCustomer().getId())
+            return;
+        cartProductRepository.delete(cp);
+    }
 }
 
