@@ -1,6 +1,7 @@
 package com.laytin.SpringWebApp.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
@@ -20,7 +21,7 @@ public class CartProduct {
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
-    @Min(value=0)
+    @Min(value=1)
     @Column(name ="quantity")
     private int quantity;
 

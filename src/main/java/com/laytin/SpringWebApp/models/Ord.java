@@ -29,11 +29,9 @@ public class Ord {
     @JoinColumn(name="address_id", referencedColumnName="id")
     private Address address;
 
-    @NotEmpty
     @Enumerated(EnumType.STRING)
     private OrderState status;
-
-    @NotEmpty
+    
     @Column(name = "orderedat")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderedAt;

@@ -128,7 +128,7 @@ public class Customer implements Serializable {
     public void setCartproducts(List<CartProduct> cartproducts) {
         this.cartproducts = cartproducts;
     }
-
+    public void addOrder(Ord order){this.ords.add(order);}
     @Override
     public String toString() {
         return "Customer{" +
