@@ -29,11 +29,9 @@ public class Product {
     @Column(name="color")
     private String color;
 
-    @NotEmpty
     @Column(name="price")
     private int price;
 
-    @NotEmpty
     @Column(name="quantity")
     private int quantity;
 
@@ -96,5 +94,11 @@ public class Product {
 
     public void setImageURLs(List<String> imageURLs) {
         this.imageURLs = imageURLs;
+    }
+    public void removeQuantity(int i){
+        this.quantity=-i;
+    }
+    public void addQuantity(int i){
+        this.quantity=+i;
     }
 }

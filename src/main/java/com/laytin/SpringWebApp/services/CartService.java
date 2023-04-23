@@ -2,10 +2,7 @@ package com.laytin.SpringWebApp.services;
 
 import com.laytin.SpringWebApp.dao.CartDAO;
 import com.laytin.SpringWebApp.models.*;
-import com.laytin.SpringWebApp.repositories.AddressRepository;
-import com.laytin.SpringWebApp.repositories.CartProductRepository;
-import com.laytin.SpringWebApp.repositories.OrdProductRepository;
-import com.laytin.SpringWebApp.repositories.OrdRepository;
+import com.laytin.SpringWebApp.repositories.*;
 import com.laytin.SpringWebApp.security.CustomerDetails;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -13,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,29 +25,25 @@ public class CartService {
     private final CartDAO cartDAO;
     private final OrdRepository ordRepository;
     private final OrdProductRepository ordProductRepository;
+    private final ProductRepository productRepository;
     @PersistenceContext
     private final EntityManager entityManager;
 
     @Autowired
-    public CartService(CartProductRepository cartProductRepository, AddressRepository addressRepository, CartDAO cartDAO, EntityManager entityManager, OrdRepository ordRepository, OrdProductRepository ordProductRepository) {
+    public CartService(CartProductRepository cartProductRepository, AddressRepository addressRepository, CartDAO cartDAO, EntityManager entityManager, OrdRepository ordRepository, OrdProductRepository ordProductRepository, ProductRepository productRepository) {
         this.cartProductRepository = cartProductRepository;
         this.addressRepository = addressRepository;
         this.cartDAO = cartDAO;
         this.entityManager = entityManager;
         this.ordRepository = ordRepository;
         this.ordProductRepository = ordProductRepository;
+        this.productRepository = productRepository;
     }
     //1+n
     @Transactional
     public List<CartProduct> getCart(){
         int customerId = ((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
         List<CartProduct> cartProduct = cartDAO.getPreloadedCartProducts(customerId);
-/*        cartProduct.stream().forEach(cp -> {
-            if(cp.getQuantity()>cp.getProduct().getQuantity()){
-                cp.setQuantity(cp.getProduct().getQuantity());
-                cartProductRepository.save(cp);
-            }
-        });*/
         return cartProduct;
     }
     public List<Address> getAddresses(){
@@ -80,23 +72,14 @@ public class CartService {
         cartProductRepository.delete(cp);
     }
     @Transactional
-    public void confirmOrder(List<CartProduct> cartRequest, Address choosedAddress,BindingResult result){
+    public void confirmOrder(List<CartProduct> cartProducts, Address choosedAddress){
         Session session =entityManager.unwrap(Session.class);
         Customer principal = ((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer();
         Customer loadedOwner = session.load(Customer.class, principal.getId());
 
-        //Validating products
-/*
-        cartRequest.stream().forEach(cartProduct -> {
-            cartProductValidator.validate(cartProduct,result);
-        });
-        if(result.hasErrors())
-            return;
-*/
-
         Ord order =  new Ord();
         //products binding (2 side)
-        List<OrdProduct> ordProducts = cartRequest.stream().map(cartProduct ->
+        List<OrdProduct> ordProducts = cartProducts.stream().map(cartProduct ->
                 new OrdProduct(order,cartProduct.getProduct(),cartProduct.getQuantity())).collect(Collectors.toList());
         order.setOrdproducts(ordProducts);
 
@@ -104,6 +87,7 @@ public class CartService {
         Hibernate.initialize(loadedOwner.getOrds());
         order.setCustomer(loadedOwner);
         loadedOwner.addOrder(order);
+
         //another info
         order.setAddress(choosedAddress);
         order.setOrderedAt(new Date());
@@ -111,8 +95,15 @@ public class CartService {
 
         ordRepository.save(order);
         ordProductRepository.saveAll(ordProducts);
-        //if ok, remove count of bought products from avaible quantity
 
+        //if ok, remove count of bought products from avaible quantity
+        cartProducts.stream().forEach(cartProduct -> {
+            Product p =cartProduct.getProduct();
+            Hibernate.initialize(cartProduct.getProduct().getQuantity());
+            p.removeQuantity(cartProduct.getQuantity());
+            productRepository.save(p);
+            cartProductRepository.delete(cartProduct);
+        });
     }
 }
 

@@ -1,8 +1,10 @@
 package com.laytin.SpringWebApp.controllers;
 
-import com.laytin.SpringWebApp.models.Address;
+import com.laytin.SpringWebApp.dto.CartDTORequest;
 import com.laytin.SpringWebApp.models.CartProduct;
+import com.laytin.SpringWebApp.models.Product;
 import com.laytin.SpringWebApp.services.CartService;
+import com.laytin.SpringWebApp.util.CartDTOValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,15 +17,20 @@ import java.util.List;
 @RequestMapping("/cart")
 public class CartController {
     private final CartService cartService;
+    private final CartDTOValidator cartDTOValidator;
     @Autowired
-    public CartController(CartService cartService) {
+    public CartController(CartService cartService, CartDTOValidator cartDTOValidator) {
         this.cartService = cartService;
+        this.cartDTOValidator = cartDTOValidator;
     }
     //return main cart page
     @GetMapping()
     public String index(Model model){
+        List<CartProduct> cp = cartService.getCart();
         model.addAttribute("addresses", cartService.getAddresses());
-        model.addAttribute("products", cartService.getCart());
+        model.addAttribute("products", cp);
+        model.addAttribute("request", new CartDTORequest(cp)); // means that all items will be checked at first.
+                                                                            // Also need for validation
         return "cart/index";
     }
     //change concrete product from cart
@@ -40,13 +47,16 @@ public class CartController {
         return "redirect:/cart";
     }
     @PostMapping("/conf")
-    public String createOrder(@ModelAttribute("products") List<CartProduct> products,
-                              @ModelAttribute("address")Address address,
+    public String createOrder(@ModelAttribute("request") CartDTORequest cartDTORequest,
                               BindingResult errors, Model model){
-/*        cartService.confirmOrder(products,address, errors);
+        cartDTOValidator.validate(cartDTORequest,errors);
         if(errors.hasErrors()){
+            //otherwise we are returning null model in getMapping
+            model.addAttribute("addresses", cartService.getAddresses());
+            model.addAttribute("products", cartService.getCart());
             return "/cart/index";
-        }*/
+        }
+        cartService.confirmOrder(cartDTORequest.getProductList(),cartDTORequest.getAddress());
         return "redirect:/order";
     }
 
