@@ -7,12 +7,13 @@ import org.hibernate.annotations.FetchMode;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+import java.io.Serializable;
 import java.util.List;
 
 
 @Entity
 @Table(name ="Product")
-public class Product {
+public class Product implements Serializable {
     // Item is a single thing like "iphone 14"
     // Different variable of this item is products
     // "Iphone 14" is an item, "Blue XS" is a product

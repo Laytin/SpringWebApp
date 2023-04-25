@@ -4,10 +4,11 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "cartproduct")
-public class CartProduct {
+public class CartProduct implements Serializable {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +21,7 @@ public class CartProduct {
     @OneToOne
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
-
-    @Min(value=1)
+    @Min(value=1, message = "Quantity should be greater than 0")
     @Column(name ="quantity")
     private int quantity;
 
