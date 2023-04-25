@@ -6,10 +6,15 @@ import com.laytin.SpringWebApp.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/products")
+
 public class ProductController {
     private final ProductService productService;
     @Autowired
@@ -31,16 +36,27 @@ public class ProductController {
         return "products/index";
     }
     @GetMapping("/{id}")
-    public String show(@PathVariable("id")int id, Model model){
+    public String show(@PathVariable("id")int id,
+                       Model model){
         Product product = productService.getProduct(id);
         model.addAttribute("product",product);
         model.addAttribute("avaibleColors",productService.getProductsByName(product.getName()));
-        model.addAttribute("cartproduct", new CartProduct());
+        if(!model.containsAttribute("cartproduct")){
+            System.out.println("CartProduct not found");
+            model.addAttribute("cartproduct",new CartProduct());
+        }
         return "products/show";
     }
     @PostMapping("/addtocart")
-    public String addToCart(@ModelAttribute("cartproduct") CartProduct cartProduct){
+    public String addToCart(@ModelAttribute("cartproduct") @Valid CartProduct cartProduct,
+                            BindingResult result,
+                            RedirectAttributes ra){
+        if(result.hasErrors()){
+            ra.addFlashAttribute("org.springframework.validation.BindingResult.cartproduct", result);
+            ra.addFlashAttribute("cartproduct", cartProduct);
+            return "redirect:/products/"+cartProduct.getProduct().getId();
+        }
         productService.addProductToCart(cartProduct);
-        return "redirect:/products/"+cartProduct.getProduct().getId();
+        return "redirect:/products/";
     }
 }
