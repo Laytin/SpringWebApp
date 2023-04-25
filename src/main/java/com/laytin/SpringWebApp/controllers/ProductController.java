@@ -42,7 +42,6 @@ public class ProductController {
         model.addAttribute("product",product);
         model.addAttribute("avaibleColors",productService.getProductsByName(product.getName()));
         if(!model.containsAttribute("cartproduct")){
-            System.out.println("CartProduct not found");
             model.addAttribute("cartproduct",new CartProduct());
         }
         return "products/show";
