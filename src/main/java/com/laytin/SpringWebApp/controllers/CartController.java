@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -29,7 +30,9 @@ public class CartController {
         List<CartProduct> cp = cartService.getCart();
         model.addAttribute("addresses", cartService.getAddresses());
         model.addAttribute("products", cp);
-        model.addAttribute("request", new CartDTORequest(cp)); // means that all items will be checked at first.
+        if(!model.containsAttribute("request"))
+            model.addAttribute("request", new CartDTORequest(cp)); // means that all items will be selected on cart page at start.
+                                                                            // in future, selected products for order in cart will be passed through js logic
                                                                             // Also need for validation
         return "cart/index";
     }
@@ -48,13 +51,12 @@ public class CartController {
     }
     @PostMapping("/conf")
     public String createOrder(@ModelAttribute("request") CartDTORequest cartDTORequest,
-                              BindingResult errors, Model model){
-        cartDTOValidator.validate(cartDTORequest,errors);
-        if(errors.hasErrors()){
-            //otherwise we are returning null model in getMapping
-            model.addAttribute("addresses", cartService.getAddresses());
-            model.addAttribute("products", cartService.getCart());
-            return "/cart/index";
+                              BindingResult result, Model model, RedirectAttributes ra){
+        cartDTOValidator.validate(cartDTORequest,result);
+        if(result.hasErrors()){
+            ra.addFlashAttribute("org.springframework.validation.BindingResult.request", result);
+            ra.addFlashAttribute("request",cartDTORequest);
+            return "redirect:/cart";
         }
         cartService.confirmOrder(cartDTORequest.getProductList(),cartDTORequest.getAddress());
         return "redirect:/order";
