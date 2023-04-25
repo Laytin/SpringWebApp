@@ -32,7 +32,8 @@ public class CartDTOValidator implements Validator {
             CartProduct cp = cartProductList.stream().filter(p -> p.getId()==dtoid).findFirst().get();
             if(cp.getQuantity()>cp.getProduct().getQuantity()){
                 errors.pushNestedPath("productList["+i+"]");
-                errors.rejectValue("quantity", "","Quantity changed of:" + cp.getProduct().getName()+","+cp.getProduct().getColor());
+                errors.rejectValue("quantity", "","Quantity changed of:" + cp.getProduct().getName()+","+cp.getProduct().getColor()+". Stock:" +
+                        cp.getProduct().getQuantity());
                 errors.popNestedPath();
             }
         }

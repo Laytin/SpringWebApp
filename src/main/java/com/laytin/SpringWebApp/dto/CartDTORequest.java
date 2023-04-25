@@ -3,9 +3,10 @@ package com.laytin.SpringWebApp.dto;
 import com.laytin.SpringWebApp.models.Address;
 import com.laytin.SpringWebApp.models.CartProduct;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class CartDTORequest {
+public class CartDTORequest implements Serializable {
     private List<CartProduct> productList;
     private Address address;
 
