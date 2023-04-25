@@ -229,7 +229,7 @@
 
     <div th:if="${product!=null}">
         <form th:method="POST" th:action="@{/products/addtocart}" th:object="${cartproduct}" id="formedit">
-            <input type="hidden" th:field="*{id}" id="id">
+            <input type="hidden" th:name="product" th:id="product" id="product" th:value="${product.id}"/>
             <h1 th:text="${product.getName()} +'('+${product.getColor()}+')'"></h1>
 
             <div th:each="img :${product.getImageURLs()}">
@@ -256,6 +256,7 @@
             <br>
 
             <input type="number" th:field="*{quantity}" id="quantity" min="1" th:max="${product.getQuantity()}" value="1"/>
+            <div style="color:red" th:if="${#fields.hasErrors('*')}" th:errors="*{quantity}">Quantity error</div>
             <div class="button" id="but">
                 <div id="slide"></div>
                 <a href="#" onclick="document.getElementById('formedit').submit()">Add to cart</a>
