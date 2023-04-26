@@ -45,7 +45,6 @@ public class AddressService {
         return address;
     }
     @Transactional
-    @PreAuthorize("hasRole('ROLE_USER')")
     public void updateAddress(Address address,int id){
         Optional<Address> adrToBeUpdated = addressRepository.findById(id);
         if(adrToBeUpdated.isEmpty() || !adrToBeUpdated.get().getCustomer().getUsername().equals(
