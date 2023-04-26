@@ -31,13 +31,12 @@ public class AddressService {
         this.addressRepository = addressRepository;
         this.customerRepository = customerRepository;
     }
-    @PreAuthorize("hasRole('ROLE_USER')")
+
     public List<Address> getAddresses(){
         Customer customer  = customerRepository.findByUsername(getPrincipialCustomer().getUsername()).get();
         Hibernate.initialize(customer.getAddresses());
         return customer.getAddresses();
     }
-    @PreAuthorize("hasRole('ROLE_USER')")
     public Address getAddress(int id){
         Customer customer  = customerRepository.findByUsername(getPrincipialCustomer().getUsername()).get();
         Hibernate.initialize(customer.getAddresses());
@@ -56,7 +55,6 @@ public class AddressService {
         addressRepository.save(address);
     }
     @Transactional
-    @PreAuthorize("hasRole('ROLE_USER')")
     public void deleteAddress(int addressId){
         Optional<Address> address = addressRepository.findById(addressId);
         if(address.isEmpty() || !address.get().getCustomer().getUsername().equals(
@@ -69,7 +67,6 @@ public class AddressService {
         addressRepository.delete(address.get());
     }
     @Transactional
-    @PreAuthorize("hasRole('ROLE_USER')")
     public void addAddress(Address address){
         Session session = entityManager.unwrap(Session.class);
         address.setCustomer(session.load(Customer.class,getPrincipialCustomer().getId()));

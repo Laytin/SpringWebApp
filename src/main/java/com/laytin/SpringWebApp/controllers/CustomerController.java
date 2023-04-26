@@ -1,12 +1,16 @@
 package com.laytin.SpringWebApp.controllers;
 
 import com.laytin.SpringWebApp.models.Customer;
+import com.laytin.SpringWebApp.models.CustomerRole;
+import com.laytin.SpringWebApp.security.CustomerDetails;
 import com.laytin.SpringWebApp.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 
@@ -35,23 +39,34 @@ public class CustomerController {
 
         return "redirect:/auth/login";
     }
-
     @GetMapping("user")
+    public String redirectUser(){
+        return "redirect:/user/"+((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
+    }
+    @GetMapping("user/{id}")
     public String index(Model model){
         model.addAttribute("customer", customerService.getCurrentCustomer());
         return "user/index";
     }
 
-    @GetMapping("user/edit")
+    @GetMapping("user/{id}/edit")
     public String editUser(Model model){
-        model.addAttribute("customer", customerService.getCurrentCustomer());
+        if(!model.containsAttribute("customer"))
+            model.addAttribute("customer", customerService.getCurrentCustomer());
+
+        if(((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getCustomer_Role() == CustomerRole.ROLE_ADMIN)
+            return "user/editAdm";
         return "user/edit";
     }
-    @PatchMapping("user/edit")
-    public String updateUser(@ModelAttribute("customer") @Valid Customer customer, BindingResult errors){
-        System.out.println("asd");
+    @PatchMapping("user/{id}")
+    public String updateUserUser(@ModelAttribute("customer") @Valid Customer customer, BindingResult errors, RedirectAttributes ra){
+        if(errors.hasErrors()){
+            ra.addFlashAttribute("org.springframework.validation.BindingResult.customer", errors);
+            ra.addFlashAttribute("customer",customer);
+            return "redirect:/user";
+        }
         customerService.updateCurrentCustomer(customer);
-        return  "redirect:/user";
+        return "redirect:/user";
     }
     @GetMapping
     public String mainPage(){

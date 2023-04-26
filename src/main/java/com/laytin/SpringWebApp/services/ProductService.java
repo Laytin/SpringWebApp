@@ -34,8 +34,6 @@ public class ProductService {
         this.cartProductRepository = cartProductRepository;
         this.entityManager = entityManager;
     }
-    ////////////////////////////////////////////////////////////////
-    //fixed 1+n
     public List<Product> getProducts(int page,String sort,String dir){
         Sort.Direction direction = dir.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
         List<Product> productList = productRepository.findAll(PageRequest.of(page-1, 10, Sort.by(direction,sort.toLowerCase()))).getContent();
@@ -76,5 +74,15 @@ public class ProductService {
         Customer customer = session.load(Customer.class,customerId);
         cartProduct.setCustomer(customer);
         cartProductRepository.save(cartProduct);
+    }
+    @Transactional
+    public int createProduct(Product product){
+        productRepository.save(product);
+        return product.getId();
+    }
+
+    public void updateProduct(int id, Product product) {
+        product.setId(id);
+        productRepository.save(product);
     }
 }

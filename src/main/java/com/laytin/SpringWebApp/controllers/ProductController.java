@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 
 @Controller
@@ -46,6 +47,7 @@ public class ProductController {
         }
         return "products/show";
     }
+
     @PostMapping("/addtocart")
     public String addToCart(@ModelAttribute("cartproduct") @Valid CartProduct cartProduct,
                             BindingResult result,
@@ -57,5 +59,32 @@ public class ProductController {
         }
         productService.addProductToCart(cartProduct);
         return "redirect:/products/";
+    }
+
+    @GetMapping("/new")
+    public String newProduct(@ModelAttribute("product") Product product){
+        return "products/new";
+    }
+    @PostMapping()
+    public String create(@ModelAttribute("product") @Valid Product product, BindingResult result){
+        if(result.hasErrors()){
+            return "products/new";
+        }
+        int id = productService.createProduct(product);
+        return "redirect:/products/"+id;
+    }
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable("id")int id,
+                       Model model){
+        model.addAttribute("product",productService.getProduct(id));
+        return "products/edit";
+    }
+    @PatchMapping("/{id}")
+    public String update(@PathVariable("id")int id, @ModelAttribute("product") @Valid Product product, BindingResult result){
+        if(result.hasErrors()){
+            return "products/edit";
+        }
+        productService.updateProduct(id, product);
+        return "redirect:/products/"+id;
     }
 }

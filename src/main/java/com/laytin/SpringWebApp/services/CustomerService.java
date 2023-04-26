@@ -41,7 +41,6 @@ public class CustomerService {
         customerRepository.save(customer);
     }
     @Transactional
-    @PreAuthorize("hasRole('ROLE_USER')") //grants that user is logged in and it's his userinfo
     public void updateCurrentCustomer(Customer customer){
         Customer updated = customerRepository.findByUsername(
                 ((CustomerDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()
@@ -52,7 +51,7 @@ public class CustomerService {
         customer.setAddresses(updated.getAddresses());// to avoid binding errors
         customer.setOrds(updated.getOrds());// to avoid binding errors
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        customer.setCustomer_Role(CustomerRole.ROLE_USER);
+        customer.setCustomer_Role(customer.getCustomer_Role());
         customerRepository.save(customer);
     }
 }

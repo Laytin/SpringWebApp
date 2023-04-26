@@ -4,12 +4,12 @@ import com.laytin.SpringWebApp.models.Ord;
 import com.laytin.SpringWebApp.repositories.OrdRepository;
 import com.laytin.SpringWebApp.services.OrdService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.security.RolesAllowed;
 
 @Controller
 @RequestMapping("/order")
@@ -36,5 +36,16 @@ public class OrdController {
         model.addAttribute("address",order.getAddress());
         model.addAttribute("products",ordService.getOrderProducts(order));
         return "order/id";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String edit(@PathVariable("id") int id, Model model){
+        model.addAttribute("order",ordService.getOrder(id));
+        return "order/edit";
+    }
+    @PatchMapping("/{id}")
+    public String update(@PathVariable("id") int id, @ModelAttribute("order") Ord order){
+        ordService.setOrderStatus(id,order);
+        return "redirect:/order/"+id;
     }
 }

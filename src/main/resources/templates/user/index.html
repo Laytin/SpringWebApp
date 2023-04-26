@@ -201,10 +201,13 @@
     <p>Email:</p>
     <p th:text="${customer.getEmail()}">Email</p>
     <br>
+    <p>Role:</p>
+    <p th:text="${customer.getCustomer_Role().toString()}">Role</p>
+    <br>
 
     <div class="button" id="but">
         <div id="slide"></div>
-        <a href="/user/edit">Edit</a>
+        <a th:href="@{user/{id}/edit(id=${customer.getId()})}">Edit</a>
     </div>
     <div class="button" id="but">
         <div id="slide"></div>
