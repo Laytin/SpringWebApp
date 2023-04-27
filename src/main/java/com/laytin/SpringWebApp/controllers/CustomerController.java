@@ -44,28 +44,23 @@ public class CustomerController {
         return "redirect:/user/"+((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
     }
     @GetMapping("user/{id}")
-    public String index(Model model){
-        model.addAttribute("customer", customerService.getCurrentCustomer());
+    public String index(@PathVariable("id") int id ,Model model){
+        model.addAttribute("customer", customerService.getCustomer(id));
         return "user/index";
     }
 
     @GetMapping("user/{id}/edit")
-    public String editUser(Model model){
+    public String editUser(@PathVariable("id") int id, Model model){
         if(!model.containsAttribute("customer"))
-            model.addAttribute("customer", customerService.getCurrentCustomer());
-
-        if(((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getCustomer_Role() == CustomerRole.ROLE_ADMIN)
-            return "user/editAdm";
+            model.addAttribute("customer", customerService.getCustomer(id));
         return "user/edit";
     }
     @PatchMapping("user/{id}")
-    public String updateUserUser(@ModelAttribute("customer") @Valid Customer customer, BindingResult errors, RedirectAttributes ra){
+    public String updateUser(@ModelAttribute("customer") @Valid Customer customer, BindingResult errors, @PathVariable("id") int id){
         if(errors.hasErrors()){
-            ra.addFlashAttribute("org.springframework.validation.BindingResult.customer", errors);
-            ra.addFlashAttribute("customer",customer);
-            return "redirect:/user";
+            return "user/edit";
         }
-        customerService.updateCurrentCustomer(customer);
+        customerService.updateCurrentCustomer(id,customer);
         return "redirect:/user";
     }
     @GetMapping

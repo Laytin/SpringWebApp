@@ -41,17 +41,21 @@ public class CustomerService {
         customerRepository.save(customer);
     }
     @Transactional
-    public void updateCurrentCustomer(Customer customer){
-        Customer updated = customerRepository.findByUsername(
-                ((CustomerDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername()
-        ).get();
-        customer.setId(updated.getId()); //same id for jpa
+    public void updateCurrentCustomer(int id,Customer customer){
+        Customer updated = customerRepository.findById(id).get();
+        customer.setId(id);
         customer.setUsername(updated.getUsername()); //same username (don't give possibility to changing em)
         customer.setCartproducts(updated.getCartproducts()); // to avoid binding errors
         customer.setAddresses(updated.getAddresses());// to avoid binding errors
-        customer.setOrds(updated.getOrds());// to avoid binding errors
+        customer.setOrds(updated.getOrds());
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        customer.setCustomer_Role(customer.getCustomer_Role());
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals(CustomerRole.ROLE_ADMIN.toString()))
+            customer.setCustomer_Role(customer.getCustomer_Role());
+
         customerRepository.save(customer);
+    }
+
+    public Customer getCustomer(int id) {
+        return customerRepository.findById(id).get();
     }
 }
