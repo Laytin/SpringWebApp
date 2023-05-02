@@ -1,3 +1,2 @@
 # SpringWebApp
-![image](https://user-images.githubusercontent.com/70861524/231529580-0ffa7bf1-513b-42b4-9041-74fffbaf5d6d.png)
-
+![image](https://user-images.githubusercontent.com/70861524/235781316-a19c7fb9-4ee8-41c9-a574-710424560464.png)
