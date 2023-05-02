@@ -27,6 +27,10 @@ public class Customer implements Serializable {
     private String username;
 
     @NotEmpty
+    @Column(name = "fullname")
+    private String fullname;
+
+    @NotEmpty
     @Column(name = "password")
     private String password;
 
@@ -51,8 +55,9 @@ public class Customer implements Serializable {
     public Customer() {
     }
 
-    public Customer(String username, String password, String email, CustomerRole customerRole) {
+    public Customer(String username, String fullname, String password, String email, CustomerRole customerRole) {
         this.username = username;
+        this.fullname = fullname;
         this.password = password;
         this.email = email;
         this.customer_Role = customerRole;
@@ -129,6 +134,13 @@ public class Customer implements Serializable {
         this.cartproducts = cartproducts;
     }
     public void addOrder(Ord order){this.ords.add(order);}
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
     @Override
     public String toString() {
         return "Customer{" +
