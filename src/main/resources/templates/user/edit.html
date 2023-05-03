@@ -9,7 +9,6 @@
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css'>
   <!-- Font Awesome CSS -->
   <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css'>
-  <link rel='stylesheet' href='user.css'>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
 
   <style>
@@ -193,12 +192,23 @@
 </div>
 
 <div class="mainContainer">
-  <form th:method="PATCH" th:action="@{/user/edit}" th:object="${customer}" id="formedit">
+  <form th:method="PATCH" th:action="@{/user/{id}(id = ${customer.getId()})}" th:object="${customer}" id="formedit">
     <label for="email">Vote email: </label>
     <input type="text" th:field="*{email}" id="email"/>
     <br/>
-    <label for="password">Vote new or old password: </label>
+    <label for="password">Vote new pass if need to change pass: </label>
     <input type="text" th:name="password" th:id="password" id="password"/>
+    <br/>
+    <select sec:authorize="hasRole('ADMIN')" name="customer_role" th:field="*{customer_Role}">
+      <option th:each="roles : ${T(com.laytin.SpringWebApp.models.CustomerRole).values()}"
+               th:value="${roles}" th:text="${roles}"></option>
+    </select>
+    <div sec:authorize="hasRole('ADMIN')">
+      <input type="text" th:field="*{fullname}">
+    </div>
+    <ul th:if="${#fields.hasErrors('*')}">
+      <li style="color:red" th:each="err : ${#fields.errors('*')}" th:text="${err}">Input is incorrect</li>
+    </ul>
     <br/>
     <div class="button" id="but">
       <div id="slide"></div>

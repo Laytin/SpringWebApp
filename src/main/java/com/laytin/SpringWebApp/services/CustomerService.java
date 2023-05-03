@@ -26,13 +26,6 @@ public class CustomerService {
         this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
     }
-    public Customer getCurrentCustomer(){
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() == null)
-            return null;
-        return customerRepository.findByUsername(((CustomerDetails)authentication.getPrincipal()).getCustomer().getUsername()).orElse(null);
-    }
     @Transactional
     public void createCustomer(Customer customer){
         //good practice of 2ways binding
@@ -44,14 +37,22 @@ public class CustomerService {
     public void updateCurrentCustomer(int id,Customer customer){
         Customer updated = customerRepository.findById(id).get();
         customer.setId(id);
-        customer.setUsername(updated.getUsername()); //same username (don't give possibility to changing em)
-        customer.setCartproducts(updated.getCartproducts()); // to avoid binding errors
-        customer.setAddresses(updated.getAddresses());// to avoid binding errors
+        customer.setUsername(updated.getUsername());
+        customer.setCartproducts(updated.getCartproducts());
+        customer.setAddresses(updated.getAddresses());
         customer.setOrds(updated.getOrds());
-        customer.setPassword(passwordEncoder.encode(customer.getPassword()));
-        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString().equals(CustomerRole.ROLE_ADMIN.toString()))
-            customer.setCustomer_Role(customer.getCustomer_Role());
 
+        if(customer.getFullname()==null || customer.getFullname().equals(""))
+            customer.setFullname(updated.getFullname());
+
+        if(customer.getPassword()!=null || !customer.getPassword().equals(""))
+            customer.setPassword(passwordEncoder.encode(customer.getPassword()));
+        else
+            customer.setPassword(updated.getPassword());
+
+        if(!SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .toString().replaceAll("[\\[.*?\\]]*","").equals(CustomerRole.ROLE_ADMIN.toString()))
+            customer.setCustomer_Role(updated.getCustomer_Role());
         customerRepository.save(customer);
     }
 
