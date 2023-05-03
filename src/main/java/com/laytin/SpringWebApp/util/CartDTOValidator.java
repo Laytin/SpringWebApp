@@ -2,7 +2,9 @@ package com.laytin.SpringWebApp.util;
 
 import com.laytin.SpringWebApp.dto.CartDTORequest;
 import com.laytin.SpringWebApp.models.CartProduct;
+import com.laytin.SpringWebApp.security.CustomerDetails;
 import com.laytin.SpringWebApp.services.CartService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
@@ -36,6 +38,12 @@ public class CartDTOValidator implements Validator {
                         cp.getProduct().getQuantity());
                 errors.popNestedPath();
             }
+        }
+
+        if(cartDTORequest.getAddress()==null
+                || cartDTORequest.getAddress().getCustomer().getId()!=
+                ((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId()){
+            errors.rejectValue("address", "", "Choose valid address");
         }
     }
 }
