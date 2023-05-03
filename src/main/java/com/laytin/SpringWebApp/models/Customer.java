@@ -49,7 +49,7 @@ public class Customer implements Serializable {
     @OneToMany(mappedBy = "customer",fetch = FetchType.LAZY)
     private List<CartProduct> cartproducts;
 
-    @Column(name = "customer_Role")
+    @Column(name = "customerrole")
     @Enumerated(EnumType.STRING)
     private CustomerRole customer_Role;
     public Customer() {

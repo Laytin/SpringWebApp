@@ -11,6 +11,10 @@
     <input type="text" th:field="*{username}" id="username"/>
     <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username Error</div>
     <br/>
+    <label for="fullname">Введите Полное настоящее имя: </label>
+    <input type="text" th:field="*{fullname}" id="fullname"/>
+    <div style="color:red" th:if="${#fields.hasErrors('fullname')}" th:errors="*{fullname}">fullname Error</div>
+    <br/>
     <label for="password">Введите пароль: </label>
     <input type="password" th:field="*{password}" id="password"/>
     <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password Error</div>
