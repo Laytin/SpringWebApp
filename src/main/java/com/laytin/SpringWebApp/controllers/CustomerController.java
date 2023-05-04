@@ -24,6 +24,10 @@ public class CustomerController {
         this.customerService = customerService;
     }
     //Show User profile with info and buttons(my address, my orders, my cart)
+    @GetMapping
+    public String mainPage(){
+        return "redirect:/products";
+    }
     @GetMapping("auth/login")
     public String login(){
         return "auth/login";
@@ -66,9 +70,22 @@ public class CustomerController {
         customerService.updateCurrentCustomer(id,customer);
         return "redirect:/user/"+id;
     }
-    @GetMapping
-    public String mainPage(){
-        return "redirect:/products";
+    @GetMapping("user/search")
+    public String searchUserGet(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page,
+                                @RequestParam(value = "sort", required = false, defaultValue = "Id") String sorting,
+                                @RequestParam(value = "dir", required = false, defaultValue = "Desc") String direction,
+                                Model m){
+        m.addAttribute("customers",customerService.getCustomerList(page,sorting,direction));
+        return "user/list";
+    }
+    @PostMapping("user/search")
+    public String searchUserPost(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page,
+                                @RequestParam(value = "sort", required = false, defaultValue = "Id") String sorting,
+                                @RequestParam(value = "dir", required = false, defaultValue = "Desc") String direction,
+                                 @RequestParam(value = "q", required = false, defaultValue = "") String search,
+                                 Model m){
+        m.addAttribute("customers",customerService.getCustomerList(page,sorting,direction,search));
+        return "user/list";
     }
     ///
 
