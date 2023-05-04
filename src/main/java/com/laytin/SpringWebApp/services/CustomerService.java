@@ -3,15 +3,20 @@ package com.laytin.SpringWebApp.services;
 
 import com.laytin.SpringWebApp.models.Customer;
 import com.laytin.SpringWebApp.models.CustomerRole;
+import com.laytin.SpringWebApp.models.Product;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import com.laytin.SpringWebApp.security.CustomerDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -58,5 +63,15 @@ public class CustomerService {
 
     public Customer getCustomer(int id) {
         return customerRepository.findById(id).get();
+    }
+    public List<Customer> getCustomerList(int page,String sort,String dir){
+        Sort.Direction direction = dir.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        List<Customer> customers = customerRepository.findAll(PageRequest.of(page-1, 10, Sort.by(direction,sort.toLowerCase()))).getContent();
+        return customers;
+    }
+    public List<Customer> getCustomerList(int page,String sort,String dir,String search){
+        Sort.Direction direction = dir.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
+        List<Customer> customers = customerRepository.findAllByAll(search,PageRequest.of(page-1, 10, Sort.by(direction,sort.toLowerCase())));
+        return customers;
     }
 }
