@@ -26,8 +26,8 @@ public class Ord {
 
     @OneToOne(fetch = FetchType.LAZY)
     @LazyToOne(LazyToOneOption.NO_PROXY)
-    @JoinColumn(name="address_id", referencedColumnName="id")
-    private Address address;
+    @JoinColumn(name="ordaddress_id", referencedColumnName="id")
+    private OrdAddress ordAddress;
 
     @Enumerated(EnumType.STRING)
     private OrderState status;
@@ -42,10 +42,10 @@ public class Ord {
     public Ord() {
     }
 
-    public Ord(List<OrdProduct> ordproducts, Customer customer, Address address, OrderState status, Date orderedAt, int total) {
+    public Ord(List<OrdProduct> ordproducts, Customer customer, OrdAddress ordAddress, OrderState status, Date orderedAt, int total) {
         this.ordproducts = ordproducts;
         this.customer = customer;
-        this.address = address;
+        this.ordAddress = ordAddress;
         this.status = status;
         this.orderedAt = orderedAt;
         this.total = total;
@@ -75,12 +75,12 @@ public class Ord {
         this.customer = customer;
     }
 
-    public Address getAddress() {
-        return address;
+    public OrdAddress getAddress() {
+        return ordAddress;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setOrdAddress(OrdAddress ordAddress) {
+        this.ordAddress = ordAddress;
     }
 
     public OrderState getStatus() {
