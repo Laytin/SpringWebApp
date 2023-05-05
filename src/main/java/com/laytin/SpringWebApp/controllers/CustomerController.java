@@ -71,6 +71,7 @@ public class CustomerController {
         return "redirect:/user/"+id;
     }
     @GetMapping("user/search")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.customer.id")
     public String searchUserGet(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page,
                                 @RequestParam(value = "sort", required = false, defaultValue = "Id") String sorting,
                                 @RequestParam(value = "dir", required = false, defaultValue = "Desc") String direction,
@@ -79,6 +80,7 @@ public class CustomerController {
         return "user/list";
     }
     @PostMapping("user/search")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.customer.id")
     public String searchUserPost(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page,
                                 @RequestParam(value = "sort", required = false, defaultValue = "Id") String sorting,
                                 @RequestParam(value = "dir", required = false, defaultValue = "Desc") String direction,
