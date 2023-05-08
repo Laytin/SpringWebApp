@@ -6,6 +6,7 @@ import com.laytin.SpringWebApp.repositories.*;
 import com.laytin.SpringWebApp.security.CustomerDetails;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,14 @@ public class CartService {
     private final OrdRepository ordRepository;
     private final OrdProductRepository ordProductRepository;
     private final ProductRepository productRepository;
+    private final ModelMapper modelMapper;
+    private final OrdAddressRepository ordAddressRepository;
     @PersistenceContext
     private final EntityManager entityManager;
 
     @Autowired
-    public CartService(CartProductRepository cartProductRepository, AddressRepository addressRepository, CartDAO cartDAO, EntityManager entityManager, OrdRepository ordRepository, OrdProductRepository ordProductRepository, ProductRepository productRepository) {
+    public CartService(CartProductRepository cartProductRepository, AddressRepository addressRepository, CartDAO cartDAO, EntityManager entityManager, OrdRepository ordRepository, OrdProductRepository ordProductRepository,
+                       ProductRepository productRepository, ModelMapper modelMapper, OrdAddressRepository ordAddressRepository) {
         this.cartProductRepository = cartProductRepository;
         this.addressRepository = addressRepository;
         this.cartDAO = cartDAO;
@@ -38,6 +42,8 @@ public class CartService {
         this.ordRepository = ordRepository;
         this.ordProductRepository = ordProductRepository;
         this.productRepository = productRepository;
+        this.modelMapper = modelMapper;
+        this.ordAddressRepository = ordAddressRepository;
     }
     //1+n
     @Transactional
@@ -88,8 +94,11 @@ public class CartService {
         order.setCustomer(loadedOwner);
         loadedOwner.addOrder(order);
 
+        OrdAddress ordAddress = modelMapper.map(choosedAddress,OrdAddress.class);
+        ordAddressRepository.save(ordAddress);
+
         //another info
-        order.setAddress(choosedAddress);
+        order.setOrdAddress(ordAddress);
         order.setOrderedAt(new Date());
         order.setStatus(OrderState.COLLECTING_ORDER);
 
