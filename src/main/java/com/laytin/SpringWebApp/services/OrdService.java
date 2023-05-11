@@ -26,7 +26,7 @@ public class OrdService {
     }
     public List<Ord> getCustomerOrders(int page){
         int customerId =((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
-        List<Ord> orders = ordRepository.findByCustomerIdOrderByIdDesc(customerId, PageRequest.of(page,5));
+        List<Ord> orders = ordRepository.findByCustomerIdOrderByIdDesc(customerId, PageRequest.of(page-1,5));
         orders.forEach(order -> order.calculateTotal());
         return orders;
     }

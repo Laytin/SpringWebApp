@@ -108,8 +108,8 @@ public class CartService {
         //if ok, remove count of bought products from avaible quantity
         cartProducts.stream().forEach(cartProduct -> {
             Product p =cartProduct.getProduct();
-            Hibernate.initialize(cartProduct.getProduct().getQuantity());
-            p.removeQuantity(cartProduct.getQuantity());
+            Hibernate.initialize(p);
+            p.setQuantity(p.getQuantity()-cartProduct.getQuantity());
             productRepository.save(p);
             cartProductRepository.delete(cartProduct);
         });

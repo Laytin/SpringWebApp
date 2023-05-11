@@ -225,6 +225,12 @@
         <div id="slide"></div>
         <a href="javascript:history.back()">Back</a>
       </div>
+  <div class="button" id="but" sec:authorize="hasRole('ROLE_MODERATOR') or hasRole('ROLE_MODERATOR')">
+    <div id="slide"></div>
+    <form th:method="GET" th:action="@{/order/{id}/edit(id=${order.getId()})}" id="edi" >
+      <a href="#" onclick="document.getElementById('edi').submit()"><b>Edit</b></a>
+    </form>
+  </div>
 </div>
 
 </body>

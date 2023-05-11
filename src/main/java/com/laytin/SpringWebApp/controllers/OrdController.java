@@ -24,7 +24,7 @@ public class OrdController {
     public String index(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page, Model model){
         if(page<1)
             page=1;
-        model.addAttribute("orders",ordService.getCustomerOrders(page-1));
+        model.addAttribute("orders",ordService.getCustomerOrders(page));
         return "order/index";
     }
     @GetMapping("/{id}")

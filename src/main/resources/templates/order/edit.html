@@ -208,9 +208,9 @@
 <div class="mainContainer">
     <form th:method="PATCH" th:action="@{/order/{id}(id=${order.getId()})}" th:object="${order}" id="formedit">
         <label>Change order state: </label>
-        <select name="state">
+        <select name="state" th:field="*{status}">
             <option th:each="state : ${T(com.laytin.SpringWebApp.models.OrderState).values()}"
-                    th:field="*{status}"></option>
+                    th:value="${state}" th:text="${state}"></option>
         </select>
         <br/>
         <div class="button" id="but">
