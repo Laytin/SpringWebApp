@@ -37,12 +37,13 @@ public class OrdController {
         model.addAttribute("products",ordService.getOrderProducts(order));
         return "order/id";
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id") int id, Model model){
         model.addAttribute("order",ordService.getOrder(id));
         return "order/edit";
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") int id, @ModelAttribute("order") Ord order){
         ordService.setOrderStatus(id,order);

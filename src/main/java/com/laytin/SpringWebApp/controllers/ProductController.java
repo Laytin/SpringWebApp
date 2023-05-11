@@ -4,6 +4,7 @@ import com.laytin.SpringWebApp.models.CartProduct;
 import com.laytin.SpringWebApp.models.Product;
 import com.laytin.SpringWebApp.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -60,11 +61,12 @@ public class ProductController {
         productService.addProductToCart(cartProduct);
         return "redirect:/products/";
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @GetMapping("/new")
     public String newProduct(@ModelAttribute("product") Product product){
         return "products/new";
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @PostMapping()
     public String create(@ModelAttribute("product") @Valid Product product, BindingResult result){
         if(result.hasErrors()){
@@ -73,12 +75,14 @@ public class ProductController {
         int id = productService.createProduct(product);
         return "redirect:/products/"+id;
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @GetMapping("/{id}/edit")
     public String edit(@PathVariable("id")int id,
                        Model model){
         model.addAttribute("product",productService.getProduct(id));
         return "products/edit";
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @PatchMapping("/{id}")
     public String update(@PathVariable("id")int id, @ModelAttribute("product") @Valid Product product, BindingResult result){
         if(result.hasErrors()){

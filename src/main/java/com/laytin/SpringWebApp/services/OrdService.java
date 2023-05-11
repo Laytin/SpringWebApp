@@ -31,9 +31,10 @@ public class OrdService {
         return orders;
     }
     public Ord getOrder(int id){
-        Customer principal =((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer();
+        CustomerDetails principal =((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal());
         Ord order = ordRepository.findOrdById(id);
-        if(order.getCustomer().getId()!=principal.getId()){
+        if(order.getCustomer().getId()!=principal.getCustomer().getId() && principal.getAuthorities()
+                .toString().replaceAll("[\\[.*?\\]]*","").equals(CustomerRole.ROLE_USER.toString())){
             return null;
         }
         Hibernate.initialize(order.getOrdproducts()); // prepare for calculation
