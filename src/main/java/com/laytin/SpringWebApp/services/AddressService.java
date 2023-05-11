@@ -33,7 +33,7 @@ public class AddressService {
     }
 
     public List<Address> getAddresses(){
-        Customer customer  = customerRepository.findByUsername(getPrincipialCustomer().getUsername()).get();
+        Customer customer  = customerRepository.findById(getPrincipialCustomer().getId()).get();
         Hibernate.initialize(customer.getAddresses());
         return customer.getAddresses();
     }

@@ -5,6 +5,8 @@ import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Entity
@@ -41,7 +43,7 @@ public class Address implements Serializable {
     @Column(name = "zipcode")
     private int zipcode;
 
-    @NotEmpty
+    @Pattern(regexp = "^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$", message = "Number should have only czifri")
     @Column(name = "phonenumber")
     private String phoneNumber;
 
