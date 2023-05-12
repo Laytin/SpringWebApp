@@ -42,8 +42,7 @@ public class AddressController {
         return "redirect:/address";
     }
     @GetMapping("/new")
-    public String add(Model model){
-        model.addAttribute("address",new Address());
+    public String add(@ModelAttribute("address") Address address){
         return "address/new";
     }
     @PostMapping()
