@@ -9,10 +9,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequestMapping("/products")
@@ -89,6 +91,12 @@ public class ProductController {
             return "products/edit";
         }
         productService.updateProduct(id, product);
+        return "redirect:/products/"+id;
+    }
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
+    @PostMapping("/{id}")
+    public String uploadImage(@PathVariable("id")int id, @RequestParam("file") List<MultipartFile> files){
+        productService.saveImages(id,files);
         return "redirect:/products/"+id;
     }
 }

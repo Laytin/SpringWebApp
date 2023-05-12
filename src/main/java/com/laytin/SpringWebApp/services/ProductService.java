@@ -8,24 +8,35 @@ import com.laytin.SpringWebApp.repositories.ProductRepository;
 import com.laytin.SpringWebApp.security.CustomerDetails;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileSystemUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 @Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository productRepository;
     private final CartProductRepository cartProductRepository;
-
+    private final Path root = Paths.get("./uploads");
     @PersistenceContext
     private final EntityManager entityManager;
     @Autowired
@@ -33,6 +44,13 @@ public class ProductService {
         this.productRepository = productRepository;
         this.cartProductRepository = cartProductRepository;
         this.entityManager = entityManager;
+    }
+    public void initImageStorage() {
+        try {
+            Files.createDirectories(root);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not initialize folder for upload!");
+        }
     }
     public List<Product> getProducts(int page,String sort,String dir){
         Sort.Direction direction = dir.toLowerCase().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -60,9 +78,14 @@ public class ProductService {
     }
 
     private List<String> getImages(int id){
-        List<String> result = new ArrayList<>(Collections.singletonList(
+
+        List<String> result = load(id);
+        if(result.isEmpty()){
+            result = new ArrayList<>(Collections.singletonList(
                 "https://www.shutterstock.com/image-vector/default-image-icon-thin-linear-260nw-2136460353.jpg"
         ));
+        }
+
         return result;
     }
     @Transactional
@@ -85,4 +108,31 @@ public class ProductService {
         product.setId(id);
         productRepository.save(product);
     }
+    @Transactional
+    public void saveImages(int id,List<MultipartFile> files) {
+        try {
+            Path exist = Files.createDirectories(Path.of(root.toString() + "/" + id+"/"));
+            files.forEach(file -> {
+                if(file.isEmpty())
+                    return;
+                try{
+                    byte[] bytes = file.getBytes();
+                    Files.write(Path.of(exist.toString() + file.getOriginalFilename()), bytes);
+                }catch (Exception e){}
+
+            });
+        } catch (IOException e) {
+            throw new RuntimeException("Cant create a directory for product with id:"+id);
+        }
+    }
+   public List<String> load(int id) {
+        List<String> urlRes = new ArrayList<>();
+       try  {
+           Files.list(Paths.get(root.toString()+"/"+id+"/")).forEach(file -> {
+               urlRes.add(file.toUri().toString());
+           });
+       } catch (IOException e) {
+       }
+       return urlRes;
+   }
 }
