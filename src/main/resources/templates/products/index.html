@@ -254,7 +254,7 @@
   <div class="inline" th:if="${!products.isEmpty()}" th:each="pr : ${products}">
     <div class="productCard">
       <div th:if="${!pr.getImageURLs().isEmpty()}">
-        <img th:src="${pr.getImageURLs().get(0)}" width="190px" height="200px">
+        <img th:src="@{${pr.getImageURLs().get(0)}}" width="190px" height="200px">
       </div>
       <h2 th:text="${pr.getName()} +', '+ ${pr.getColor()}"></h2>
       <br>

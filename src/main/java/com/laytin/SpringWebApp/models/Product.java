@@ -1,14 +1,16 @@
 package com.laytin.SpringWebApp.models;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -38,6 +40,14 @@ public class Product implements Serializable {
 
     @Transient
     private List<String> imageURLs;
+
+    public List<String> getImageURLs() {
+        return imageURLs;
+    }
+
+    public void setImageURLs(List<String> imageURLs) {
+        this.imageURLs = imageURLs;
+    }
 
     public Product() {
     }
@@ -89,17 +99,28 @@ public class Product implements Serializable {
         this.quantity = quantity;
     }
 
-    public List<String> getImageURLs() {
-        return imageURLs;
-    }
-
-    public void setImageURLs(List<String> imageURLs) {
-        this.imageURLs = imageURLs;
-    }
     public void removeQuantity(int i){
         this.quantity=-i;
     }
     public void addQuantity(int i){
         this.quantity=+i;
     }
+    public void loadImages(){
+        try {
+                List<String> f = Files.list(Paths.get("uploads/" +getId()+"/"))
+                        .filter(file -> !Files.isDirectory(file))
+                        .map(Path::getFileName)
+                        .map(Path::toString)
+                        .collect(Collectors.toList());
+                imageURLs = new ArrayList<>();
+                f.forEach(file-> imageURLs.add("uploads/" + id + "/" + file.replaceAll("[\\[*?\\]]*","")));
+            if(f.isEmpty())
+                imageURLs.add("https://www.imgonline.com.ua/examples/bee-on-daisy.jpg");
+
+        } catch (IOException e) {
+            imageURLs.add("https://www.imgonline.com.ua/examples/bee-on-daisy.jpg");
+            throw new RuntimeException(e);
+        }
+    }
+
 }
