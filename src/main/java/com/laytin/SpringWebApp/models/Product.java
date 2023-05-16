@@ -106,20 +106,19 @@ public class Product implements Serializable {
         this.quantity=+i;
     }
     public void loadImages(){
+        imageURLs = new ArrayList<>();
         try {
-                List<String> f = Files.list(Paths.get("uploads/" +getId()+"/"))
+                List<String> f = Files.list(Paths.get("uploads/products/" +getId()+"/"))
                         .filter(file -> !Files.isDirectory(file))
                         .map(Path::getFileName)
                         .map(Path::toString)
                         .collect(Collectors.toList());
-                imageURLs = new ArrayList<>();
-                f.forEach(file-> imageURLs.add("uploads/" + id + "/" + file.replaceAll("[\\[*?\\]]*","")));
+                f.forEach(file-> imageURLs.add("uploads/products/" + id + "/" + file.replaceAll("[\\[*?\\]]*","")));
             if(f.isEmpty())
-                imageURLs.add("https://www.imgonline.com.ua/examples/bee-on-daisy.jpg");
+                imageURLs.add("https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg");
 
         } catch (IOException e) {
-            imageURLs.add("https://www.imgonline.com.ua/examples/bee-on-daisy.jpg");
-            throw new RuntimeException(e);
+            imageURLs.add("https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg");
         }
     }
 

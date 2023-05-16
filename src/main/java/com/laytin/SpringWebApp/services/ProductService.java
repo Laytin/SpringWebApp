@@ -30,8 +30,7 @@ import java.util.List;
 public class ProductService {
     private final ProductRepository productRepository;
     private final CartProductRepository cartProductRepository;
-    private final Path root = Paths.get("./products" +
-            "/uploads");
+    private final Path root = Paths.get("./uploads/products");
     @PersistenceContext
     private final EntityManager entityManager;
     @Autowired
@@ -71,7 +70,6 @@ public class ProductService {
     private void enrichProductImages(List<Product> productList){
         productList.forEach(product -> {
             product.loadImages();
-            System.out.println(product.getImageURLs());
         });
     }
 
@@ -97,19 +95,14 @@ public class ProductService {
     }
     @Transactional
     public void saveImages(int id,List<MultipartFile> files) {
-        try {
-            Path exist = Files.createDirectories(Path.of(root.toString() + "/" + id+"/"));
-            files.forEach(file -> {
-                if(file.isEmpty())
-                    return;
-                try{
-                    byte[] bytes = file.getBytes();
-                    Files.write(Path.of(exist.toString() + file.getOriginalFilename()), bytes);
-                }catch (Exception e){}
+        files.forEach(file -> {
+            if(file.isEmpty())
+                return;
+            try{
+                byte[] bytes = file.getBytes();
+                Files.write(Path.of(root.toString() + "/"+id+"/" + file.getOriginalFilename()), bytes);
+            }catch (Exception e){}
 
-            });
-        } catch (IOException e) {
-            throw new RuntimeException("Cant create a directory for product with id:"+id);
-        }
+        });
     }
 }
