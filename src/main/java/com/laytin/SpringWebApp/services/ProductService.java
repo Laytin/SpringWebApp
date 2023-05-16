@@ -14,9 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,9 +70,7 @@ public class ProductService {
     }
 
     private void enrichProductImages(List<Product> productList){
-        productList.forEach(product -> {
-            product.loadImages();
-        });
+        productList.forEach(Product::loadImages);
     }
 
     @Transactional
@@ -104,5 +104,16 @@ public class ProductService {
             }catch (Exception e){}
 
         });
+    }
+    @Transactional
+    public void deleteImage(int id, String filename, RedirectAttributes ra) {
+        try {
+            Files.deleteIfExists(Path.of(root.toString() + "/"+id+"/" + filename));
+            Files.deleteIfExists(Path.of(filename));
+            ra.addFlashAttribute("message", "Successfully deleted");
+        } catch (IOException e) {
+            ra.addFlashAttribute("message", "Error:"+e.getStackTrace().toString());
+            throw new RuntimeException(e);
+        }
     }
 }

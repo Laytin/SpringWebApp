@@ -102,5 +102,10 @@ public class ProductController {
         productService.saveImages(id,files);
         return "redirect:/products/"+id;
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
+    @GetMapping("/{id}/deleteimage/{filename:.+}")
+    public String deleteImage(@PathVariable("id") int id,@PathVariable("filename") String filename,RedirectAttributes redirectAttributes){
+        productService.deleteImage(id,filename,redirectAttributes);
+        return "redirect:/products/"+id;
+    }
 }

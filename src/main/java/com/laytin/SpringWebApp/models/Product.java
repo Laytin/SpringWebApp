@@ -3,6 +3,7 @@ package com.laytin.SpringWebApp.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.Files;
@@ -113,10 +114,11 @@ public class Product implements Serializable {
                         .map(Path::getFileName)
                         .map(Path::toString)
                         .collect(Collectors.toList());
+            if(f.isEmpty()){
+                imageURLs.add(new File("uploads/products/default").listFiles()[0].getPath());
+            }else{
                 f.forEach(file-> imageURLs.add("uploads/products/" + id + "/" + file.replaceAll("[\\[*?\\]]*","")));
-            if(f.isEmpty())
-                imageURLs.add("https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg");
-
+            }
         } catch (IOException e) {
             imageURLs.add("https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg");
         }
