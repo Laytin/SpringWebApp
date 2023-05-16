@@ -233,9 +233,10 @@
             <h1 th:text="${product.getName()} +'('+${product.getColor()}+')'"></h1>
 
             <div th:each="img :${product.getImageURLs()}">
-                <img th:src="${img}" width="30px" height="30px" display="inline-block">
+                <img th:src="@{'/'+${img}}" width="50px" height="50px">
             </div>
-            <img th:src="${product.getImageURLs().get(0)}" width="100px" height="100px" display="inline-block">
+            <img th:src="@{'/'+${product.getImageURLs().get(0)}}" width="190px" height="200px">
+
             <br>
             <label for="select_colors">Choose a color:</label>
             <select name="colors" id="select_colors" onchange="val()">
@@ -260,6 +261,9 @@
             <div class="button" id="but">
                 <div id="slide"></div>
                 <a href="#" onclick="document.getElementById('formedit').submit()">Add to cart</a>
+            </div>
+            <div sec:authorize="hasRole('MODERATOR') or hasRole('ADMIN')">
+                <a th:href="@{/products/{id}/edit(id=${product.getId()})}">edit</a>
             </div>
         </form>
     </div>

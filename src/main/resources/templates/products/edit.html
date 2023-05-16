@@ -219,6 +219,12 @@
     <label for="Price">Price: </label>
     <input type="text" th:field="*{price}" id="Price"/>
     <br/>
+    <p>Exist images:</p>
+    <div th:if="${!product.getImageURLs().isEmpty()}" th:each="img :${product.getImageURLs()}">
+      <img th:src="@{'/'+${img}}" width="190px" height="200px">
+      <a th:href="@{/products/{id}/deleteimage/{file}(id=${product.getId()}, file=${img.substring(img.lastIndexOf('/') +1)})}"
+         title="Delete this image">Delete this image</a>
+    </div>
 
     <div class="button" id="but">
       <div id="slide"></div>
