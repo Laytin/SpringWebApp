@@ -8,8 +8,6 @@ import com.laytin.SpringWebApp.security.CustomerDetails;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,34 +30,28 @@ public class AddressService {
         this.customerRepository = customerRepository;
     }
 
-    public List<Address> getAddresses(){
-        Customer customer  = customerRepository.findById(getPrincipialCustomer().getId()).get();
-        Hibernate.initialize(customer.getAddresses());
-        return customer.getAddresses();
+    public List<Address> getAddresses(CustomerDetails cd){
+        return addressRepository.findByCustomerId(cd.getCustomer().getId());
     }
-    public Address getAddress(int id){
-        Customer customer  = customerRepository.findByUsername(getPrincipialCustomer().getUsername()).get();
-        Hibernate.initialize(customer.getAddresses());
-        Address address = customer.getAddresses().stream().filter(adr -> id==adr.getId()).findFirst().orElse(null);
-        return address;
+    public Address getAddress(int id, CustomerDetails cd){
+        Optional<Address> adr = addressRepository.findById(id);
+        if(!adr.isPresent() || adr.get().getCustomer().getId()!=cd.getCustomer().getId())
+            return null;
+        return adr.get();
     }
     @Transactional
-    public void updateAddress(Address address,int id){
+    public void updateAddress(Address address,int id, CustomerDetails cd){
         Optional<Address> adrToBeUpdated = addressRepository.findById(id);
-        if(adrToBeUpdated.isEmpty() || !adrToBeUpdated.get().getCustomer().getUsername().equals(
-                getPrincipialCustomer().getUsername())
-        )
+        if(adrToBeUpdated.isEmpty() || adrToBeUpdated.get().getCustomer().getId()!= cd.getCustomer().getId())
             return;
         address.setId(id);
         address.setCustomer(adrToBeUpdated.get().getCustomer());
         addressRepository.save(address);
     }
     @Transactional
-    public void deleteAddress(int addressId){
+    public void deleteAddress(int addressId, CustomerDetails cd){
         Optional<Address> address = addressRepository.findById(addressId);
-        if(address.isEmpty() || !address.get().getCustomer().getUsername().equals(
-                getPrincipialCustomer().getUsername())
-        )
+        if(address.isEmpty() || address.get().getCustomer().getId()!= cd.getCustomer().getId())
             return;
         Hibernate.initialize(address.get().getCustomer());
         address.get().getCustomer().removeAddress(address.get());
@@ -67,13 +59,10 @@ public class AddressService {
         addressRepository.delete(address.get());
     }
     @Transactional
-    public void addAddress(Address address){
+    public void addAddress(Address address, CustomerDetails cd){
         Session session = entityManager.unwrap(Session.class);
-        address.setCustomer(session.load(Customer.class,getPrincipialCustomer().getId()));
+        address.setCustomer(session.load(Customer.class,cd.getCustomer().getId()));
         addressRepository.save(address);
-    }
-    private Customer getPrincipialCustomer(){
-        return ((CustomerDetails)SecurityContextHolder. getContext(). getAuthentication().getPrincipal()).getCustomer();
     }
     //get one
     //get List
