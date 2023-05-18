@@ -3,9 +3,11 @@ package com.laytin.SpringWebApp.controllers;
 import com.laytin.SpringWebApp.dto.CartDTORequest;
 import com.laytin.SpringWebApp.models.CartProduct;
 import com.laytin.SpringWebApp.models.Product;
+import com.laytin.SpringWebApp.security.CustomerDetails;
 import com.laytin.SpringWebApp.services.CartService;
 import com.laytin.SpringWebApp.util.CartDTOValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,34 +26,31 @@ public class CartController {
         this.cartService = cartService;
         this.cartDTOValidator = cartDTOValidator;
     }
-    //return main cart page
     @GetMapping()
-    public String index(Model model){
-        List<CartProduct> cp = cartService.getCart();
-        model.addAttribute("addresses", cartService.getAddresses());
+    public String index(Model model, Authentication auth){
+        List<CartProduct> cp = cartService.getCart((CustomerDetails) auth.getPrincipal());
+        model.addAttribute("addresses", cartService.getAddresses((CustomerDetails) auth.getPrincipal()));
         model.addAttribute("products", cp);
+        // cartdto - waiting for req, filling all products in req. Can make a template with checkboxes, which product
+        // customer would buy now
         if(!model.containsAttribute("request"))
-            model.addAttribute("request", new CartDTORequest(cp)); // means that all items will be selected on cart page at start.
-                                                                            // in future, selected products for order in cart will be passed through js logic
-                                                                            // Also need for validation
+            model.addAttribute("request", new CartDTORequest(cp));
+
         return "cart/index";
     }
-    //change concrete product from cart
     @PatchMapping("/{id}")
-    public String updateCart(@PathVariable("id") int id, @ModelAttribute CartProduct cartProduct){
-        cartService.updateCartProduct(id, cartProduct);
+    public String updateCart(@PathVariable("id") int id, @ModelAttribute CartProduct cartProduct, Authentication auth){
+        cartService.updateCartProduct(id, cartProduct,(CustomerDetails) auth.getPrincipal());
         return "redirect:/cart";
     }
-    //delete product from cart
     @DeleteMapping("/{id}")
-    public String deleteFromCart(@PathVariable("id") int id){
-        System.out.println("asda");
-        cartService.deleteCartProduct(id);
+    public String deleteFromCart(@PathVariable("id") int id, Authentication auth){
+        cartService.deleteCartProduct(id,(CustomerDetails) auth.getPrincipal());
         return "redirect:/cart";
     }
     @PostMapping("/conf")
     public String createOrder(@ModelAttribute("request") CartDTORequest cartDTORequest,
-                              BindingResult result, Model model, RedirectAttributes ra){
+                              BindingResult result, Model model, RedirectAttributes ra, Authentication auth){
         cartDTOValidator.validate(cartDTORequest,result);
         if(result.hasErrors()){
             ra.addFlashAttribute("org.springframework.validation.BindingResult.request", result);

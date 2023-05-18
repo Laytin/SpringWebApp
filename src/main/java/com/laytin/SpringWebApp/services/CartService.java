@@ -47,17 +47,17 @@ public class CartService {
     }
     //1+n
     @Transactional
-    public List<CartProduct> getCart(){
+    public List<CartProduct> getCart(CustomerDetails principal){
         int customerId = ((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
         List<CartProduct> cartProduct = cartDAO.getPreloadedCartProducts(customerId);
         return cartProduct;
     }
-    public List<Address> getAddresses(){
+    public List<Address> getAddresses(CustomerDetails principal){
         int customerId = ((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
         return addressRepository.findByCustomerId(customerId);
     }
 
-    public void updateCartProduct(int id, CartProduct cartProduct) {
+    public void updateCartProduct(int id, CartProduct cartProduct, CustomerDetails principal) {
         CartProduct cp = cartProductRepository.findById(id).get();
         if(cp.getQuantity()==cartProduct.getQuantity())
             return;
@@ -70,7 +70,7 @@ public class CartService {
         cp.setQuantity(Math.min(cartProduct.getQuantity(),cp.getProduct().getQuantity()));
         cartProductRepository.save(cp);
     }
-    public void deleteCartProduct(int id){
+    public void deleteCartProduct(int id, CustomerDetails principal){
         CartProduct cp = cartProductRepository.findById(id).get();
         Hibernate.initialize(cp.getCustomer());
         if(((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId() != cp.getCustomer().getId())
