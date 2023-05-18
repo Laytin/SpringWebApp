@@ -64,6 +64,4 @@ public class AddressService {
         address.setCustomer(session.load(Customer.class,cd.getCustomer().getId()));
         addressRepository.save(address);
     }
-    //get one
-    //get List
 }
