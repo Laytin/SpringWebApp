@@ -4,6 +4,7 @@ import com.laytin.SpringWebApp.dto.CartDTORequest;
 import com.laytin.SpringWebApp.models.CartProduct;
 import com.laytin.SpringWebApp.security.CustomerDetails;
 import com.laytin.SpringWebApp.services.CartService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
@@ -28,7 +29,8 @@ public class CartDTOValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         CartDTORequest cartDTORequest = (CartDTORequest) target;
-        List<CartProduct> cartProductList = cartService.getCart(); //need recall from db to fetch product quantity(just in case)
+        List<CartProduct> cartProductList = cartService.getCart((CustomerDetails)
+                (SecurityContextHolder. getContext(). getAuthentication().getPrincipal()));//need recall from db to fetch product quantity(just in case)
         for(int i =0; i<cartDTORequest.getProductList().size(); i++) {
             int dtoid = cartDTORequest.getProductList().get(i).getId();
             CartProduct cp = cartProductList.stream().filter(p -> p.getId()==dtoid).findFirst().get();

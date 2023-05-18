@@ -213,9 +213,9 @@
         <p th:text="'Product:'+${pr.getName()} +', Color:'+${pr.getColor()}+', Quantity'+${pr.getQuantity()}"></p>
         <br>
       </div>
-  <p th:text="${address.getFirstname() + ' ' + address.getLastname() + ', ' + address.getPhoneNumber() + ', '+ address.getZipcode()}"></p>
+  <p th:text="${order.getOrdAddress().getFirstname() + ' ' + order.getOrdAddress().getLastname() + ', ' + order.getOrdAddress().getPhoneNumber() + ', '+ order.getOrdAddress().getZipcode()}"></p>
   <br>
-  <p th:text="${address.getCountry() + ', ' + address.getCity() + ', ' + address.getState()}"></p>
+  <p th:text="${order.getOrdAddress().getCountry() + ', ' + order.getOrdAddress().getCity() + ', ' + order.getOrdAddress().getState()}"></p>
     <br>
       <p th:text="'Total:'+${order.getTotal()}"></p>
       <br>
