@@ -20,12 +20,19 @@ public class OrdDAO {
         this.entityManager = entityManager;
     }
     @Transactional(readOnly = true)
-    public List<Ord> getOrders(int id,  Pageable pageable){
+    public List<Ord> getOrders(Customer customer, Pageable pageable){
         Session session = entityManager.unwrap(Session.class);
         int start = pageable.getPageNumber()* pageable.getPageSize();
         int end = (pageable.getPageNumber()+1)* pageable.getPageSize();
         Query q = session.createQuery("select o from Ord o JOIN FETCH o.ordproducts op JOIN FETCH op.product WHERE o.customer=?1")
-                .setParameter(1,session.load(Customer.class,id)).setFirstResult(start).setMaxResults(end);
+                .setParameter(1,customer).setFirstResult(start).setMaxResults(end);
         return q.getResultList();
+    }
+    @Transactional(readOnly = true)
+    public Ord getOrder(int id){
+        Session session = entityManager.unwrap(Session.class);
+        Query q = session.createQuery("select o from Ord o JOIN FETCH o.ordproducts op JOIN FETCH op.product JOIN FETCH o.ordAddress WHERE o=?1")
+                .setParameter(1,session.load(Ord.class,id));
+        return (Ord) q.getSingleResult();
     }
 }

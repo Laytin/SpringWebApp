@@ -2,9 +2,11 @@ package com.laytin.SpringWebApp.controllers;
 
 import com.laytin.SpringWebApp.models.Ord;
 import com.laytin.SpringWebApp.repositories.OrdRepository;
+import com.laytin.SpringWebApp.security.CustomerDetails;
 import com.laytin.SpringWebApp.services.OrdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,19 +23,16 @@ public class OrdController {
     }
     // show all orders
     @GetMapping()
-    public String index(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page, Model model){
-        if(page<1)
-            page=1;
-        model.addAttribute("orders",ordService.getCustomerOrders(page));
+    public String index(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page, Model model, Authentication auth){
+        model.addAttribute("orders",ordService.getCustomerOrders(page<1?1:page,(CustomerDetails) auth.getPrincipal()));
         return "order/index";
     }
     @GetMapping("/{id}")
-    public String showOrder(@PathVariable("id") int id, Model model){
-        Ord order = ordService.getOrder( id);
+    public String showOrder(@PathVariable("id") int id, Model model, Authentication auth){
+        Ord order = ordService.getOrder(id);
         if(order==null)
             return "redirect:/order";
         model.addAttribute("order",order);
-        model.addAttribute("products",ordService.getOrderProducts(order));
         return "order/id";
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
