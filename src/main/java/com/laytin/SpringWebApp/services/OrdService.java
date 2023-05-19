@@ -1,5 +1,6 @@
 package com.laytin.SpringWebApp.services;
 
+import com.laytin.SpringWebApp.dao.OrdDAO;
 import com.laytin.SpringWebApp.models.*;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import com.laytin.SpringWebApp.repositories.OrdRepository;
@@ -19,15 +20,17 @@ import java.util.stream.Collectors;
 public class OrdService {
     private final OrdRepository ordRepository;
     private final CustomerRepository customerRepository;
+    private final OrdDAO ordDAO;
     @Autowired
-    public OrdService(OrdRepository ordRepository, CustomerRepository customerRepository) {
+    public OrdService(OrdRepository ordRepository, CustomerRepository customerRepository, OrdDAO ordDAO) {
         this.ordRepository = ordRepository;
         this.customerRepository = customerRepository;
+        this.ordDAO = ordDAO;
     }
     public List<Ord> getCustomerOrders(int page){
         int customerId =((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
-        List<Ord> orders = ordRepository.findByCustomerIdOrderByIdDesc(customerId, PageRequest.of(page-1,5));
-        orders.forEach(order -> order.calculateTotal());
+        List<Ord> orders = ordDAO.getOrders(customerId, PageRequest.of(page-1,5));
+        orders.forEach(Ord::calculateTotal);
         return orders;
     }
     public Ord getOrder(int id){
@@ -38,7 +41,7 @@ public class OrdService {
             return null;
         }
         Hibernate.initialize(order.getOrdproducts()); // prepare for calculation
-        Hibernate.initialize(order.getAddress()); // prepare for calculation
+        Hibernate.initialize(order.getOrdAddress()); // prepare for calculation
         order.calculateTotal();
         return order;
     }

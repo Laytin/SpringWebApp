@@ -1,5 +1,7 @@
 package com.laytin.SpringWebApp.models;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyToOne;
 import org.hibernate.annotations.LazyToOneOption;
 
@@ -25,7 +27,6 @@ public class Ord {
     private Customer customer;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @LazyToOne(LazyToOneOption.NO_PROXY)
     @JoinColumn(name="ordaddress_id", referencedColumnName="id")
     private OrdAddress ordAddress;
 
@@ -75,7 +76,7 @@ public class Ord {
         this.customer = customer;
     }
 
-    public OrdAddress getAddress() {
+    public OrdAddress getOrdAddress() {
         return ordAddress;
     }
 

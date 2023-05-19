@@ -33,7 +33,6 @@ public class OrdController {
         if(order==null)
             return "redirect:/order";
         model.addAttribute("order",order);
-        model.addAttribute("address",order.getAddress());
         model.addAttribute("products",ordService.getOrderProducts(order));
         return "order/id";
     }
