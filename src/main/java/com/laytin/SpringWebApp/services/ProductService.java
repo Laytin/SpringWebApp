@@ -18,7 +18,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -68,18 +67,10 @@ public class ProductService {
     public List<Product> getProductsByName(String name) {
         return productRepository.findByNameContainingIgnoreCase(name);
     }
-
-    private void enrichProductImages(List<Product> productList){
-        productList.forEach(Product::loadImages);
-    }
-
     @Transactional
-    public void addProductToCart(CartProduct cartProduct) {
-        //select * from product where product.name = (select name from product where product.id=2)
-        // TODO: optimize
-        int customerId = ((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
+    public void addProductToCart(CartProduct cartProduct, CustomerDetails principal) {
         Session session = entityManager.unwrap(Session.class);
-        Customer customer = session.load(Customer.class,customerId);
+        Customer customer = session.load(Customer.class,principal.getCustomer().getId());
         cartProduct.setCustomer(customer);
         cartProductRepository.save(cartProduct);
     }
@@ -115,5 +106,8 @@ public class ProductService {
             ra.addFlashAttribute("message", "Error:"+e.getStackTrace().toString());
             throw new RuntimeException(e);
         }
+    }
+    private void enrichProductImages(List<Product> productList){
+        productList.forEach(Product::loadImages);
     }
 }
