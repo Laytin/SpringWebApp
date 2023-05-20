@@ -31,9 +31,10 @@ public class OrdService {
         orders.forEach(Ord::calculateTotal);
         return orders;
     }
-    public Ord getOrder(int id){
-        CustomerDetails principal =((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal());
+    public Ord getOrder(int id, CustomerDetails principal){
         Ord order = ordDAO.getOrder(id);
+        if (order==null)
+            return null;
         if(order.getCustomer().getId()!=principal.getCustomer().getId() && principal.getAuthorities()
                 .toString().replaceAll("[\\[.*?\\]]*","").equals(CustomerRole.ROLE_USER.toString())){
             return null;

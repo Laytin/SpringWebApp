@@ -29,7 +29,7 @@ public class OrdController {
     }
     @GetMapping("/{id}")
     public String showOrder(@PathVariable("id") int id, Model model, Authentication auth){
-        Ord order = ordService.getOrder(id);
+        Ord order = ordService.getOrder(id, (CustomerDetails) auth.getPrincipal());
         if(order==null)
             return "redirect:/order";
         model.addAttribute("order",order);
@@ -37,8 +37,8 @@ public class OrdController {
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @GetMapping("/{id}/edit")
-    public String edit(@PathVariable("id") int id, Model model){
-        model.addAttribute("order",ordService.getOrder(id));
+    public String edit(@PathVariable("id") int id, Model model,Authentication auth){
+        model.addAttribute("order",ordService.getOrder(id,(CustomerDetails) auth.getPrincipal()));
         return "order/edit";
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")

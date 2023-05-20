@@ -33,6 +33,11 @@ public class OrdDAO {
         Session session = entityManager.unwrap(Session.class);
         Query q = session.createQuery("select o from Ord o JOIN FETCH o.ordproducts op JOIN FETCH op.product JOIN FETCH o.ordAddress WHERE o=?1")
                 .setParameter(1,session.load(Ord.class,id));
-        return (Ord) q.getSingleResult();
+        Ord o=null;
+        try {
+            o = (Ord) q.getSingleResult();
+        } catch (Exception e) {
+        }
+        return o;
     }
 }
