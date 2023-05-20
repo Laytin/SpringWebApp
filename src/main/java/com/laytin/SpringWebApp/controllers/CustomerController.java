@@ -6,6 +6,7 @@ import com.laytin.SpringWebApp.security.CustomerDetails;
 import com.laytin.SpringWebApp.services.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,11 +24,16 @@ public class CustomerController {
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
-    //Show User profile with info and buttons(my address, my orders, my cart)
+    /////
     @GetMapping
     public String mainPage(){
         return "redirect:/products";
     }
+    @GetMapping("user")
+    public String redirectUser(Authentication auth){
+        return "redirect:user/"+((CustomerDetails) auth.getPrincipal()).getCustomer().getId();
+    }
+    /////
     @GetMapping("auth/login")
     public String login(){
         return "auth/login";
@@ -39,18 +45,13 @@ public class CustomerController {
     @PostMapping("auth/registration")
     public String performRegistration(@ModelAttribute("customer") @Valid Customer customer,
                                       BindingResult bindingResult) {
-
         customerService.createCustomer(customer);
-
         return "redirect:/auth/login";
     }
-    @GetMapping("user")
-    public String redirectUser(){
-        return "redirect:user/"+((CustomerDetails) SecurityContextHolder. getContext(). getAuthentication(). getPrincipal()).getCustomer().getId();
-    }
+    /////
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.customer.id")
     @GetMapping("user/{id}")
-    public String index(@PathVariable("id") int id ,Model model){
+    public String show(@PathVariable("id") int id ,Model model){
         model.addAttribute("customer", customerService.getCustomer(id));
         return "user/index";
     }
@@ -63,15 +64,15 @@ public class CustomerController {
     }
     @PatchMapping("user/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.customer.id")
-    public String updateUser(@ModelAttribute("customer") Customer customer, BindingResult errors, @PathVariable("id") int id){
+    public String updateUser(@ModelAttribute("customer") Customer customer, BindingResult errors, @PathVariable("id") int id, Authentication auth){
         if(errors.hasErrors()){
             return "user/edit";
         }
-        customerService.updateCurrentCustomer(id,customer);
+        customerService.updateCurrentCustomer(id,customer, (CustomerDetails) auth.getPrincipal());
         return "redirect:/user/"+id;
     }
     @GetMapping("user/search")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.customer.id")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String searchUserGet(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page,
                                 @RequestParam(value = "sort", required = false, defaultValue = "Id") String sorting,
                                 @RequestParam(value = "dir", required = false, defaultValue = "Desc") String direction,
@@ -80,7 +81,7 @@ public class CustomerController {
         return "user/list";
     }
     @PostMapping("user/search")
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == authentication.principal.customer.id")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String searchUserPost(@RequestParam(value = "page", required = false,defaultValue = "1") Integer page,
                                 @RequestParam(value = "sort", required = false, defaultValue = "Id") String sorting,
                                 @RequestParam(value = "dir", required = false, defaultValue = "Desc") String direction,
@@ -89,6 +90,4 @@ public class CustomerController {
         m.addAttribute("customers",customerService.getCustomerList(page,sorting,direction,search));
         return "user/list";
     }
-    ///
-
 }

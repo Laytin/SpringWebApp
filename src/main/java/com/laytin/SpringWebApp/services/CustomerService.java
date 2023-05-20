@@ -3,14 +3,11 @@ package com.laytin.SpringWebApp.services;
 
 import com.laytin.SpringWebApp.models.Customer;
 import com.laytin.SpringWebApp.models.CustomerRole;
-import com.laytin.SpringWebApp.models.Product;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import com.laytin.SpringWebApp.security.CustomerDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,7 +36,7 @@ public class CustomerService {
         customerRepository.save(customer);
     }
     @Transactional
-    public void updateCurrentCustomer(int id,Customer customer){
+    public void updateCurrentCustomer(int id, Customer customer, CustomerDetails principal){
         Customer updated = customerRepository.findById(id).get();
         customer.setId(id);
         customer.setUsername(updated.getUsername());
@@ -55,12 +52,11 @@ public class CustomerService {
         else
             customer.setPassword(updated.getPassword());
 
-        if(!SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+        if(!principal.getAuthorities()
                 .toString().replaceAll("[\\[.*?\\]]*","").equals(CustomerRole.ROLE_ADMIN.toString()))
             customer.setCustomer_Role(updated.getCustomer_Role());
         customerRepository.save(customer);
     }
-
     public Customer getCustomer(int id) {
         return customerRepository.findById(id).get();
     }
