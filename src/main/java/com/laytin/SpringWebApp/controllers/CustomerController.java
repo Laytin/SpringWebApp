@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -44,8 +45,8 @@ public class CustomerController {
     }
     @PostMapping("auth/registration")
     public String performRegistration(@ModelAttribute("customer") @Valid Customer customer,
-                                      BindingResult bindingResult) {
-        customerService.createCustomer(customer);
+                                      BindingResult bindingResult, HttpServletRequest request) {
+        customerService.createCustomer(customer,request);
         return "redirect:/auth/login";
     }
     /////

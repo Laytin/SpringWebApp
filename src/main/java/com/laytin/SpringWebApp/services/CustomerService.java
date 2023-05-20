@@ -5,14 +5,16 @@ import com.laytin.SpringWebApp.models.Customer;
 import com.laytin.SpringWebApp.models.CustomerRole;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import com.laytin.SpringWebApp.security.CustomerDetails;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -22,6 +24,7 @@ public class CustomerService {
     //one service many repository
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Logger log= LogManager.getLogger(CustomerService.class);
 
     @Autowired
     public CustomerService(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
@@ -29,11 +32,12 @@ public class CustomerService {
         this.passwordEncoder = passwordEncoder;
     }
     @Transactional
-    public void createCustomer(Customer customer){
+    public void createCustomer(Customer customer, HttpServletRequest request){
         //good practice of 2ways binding
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         customer.setCustomer_Role(CustomerRole.ROLE_USER);
         customerRepository.save(customer);
+        log.info("Customer has been registered:"+customer.toString()+", IP:"+request.getRemoteAddr());
     }
     @Transactional
     public void updateCurrentCustomer(int id, Customer customer, CustomerDetails principal){
@@ -56,6 +60,7 @@ public class CustomerService {
                 .toString().replaceAll("[\\[.*?\\]]*","").equals(CustomerRole.ROLE_ADMIN.toString()))
             customer.setCustomer_Role(updated.getCustomer_Role());
         customerRepository.save(customer);
+        log.info("Customer has been updated:"+customer.toString()+" by ["+principal.getCustomer().toString()+"]");
     }
     public Customer getCustomer(int id) {
         return customerRepository.findById(id).get();

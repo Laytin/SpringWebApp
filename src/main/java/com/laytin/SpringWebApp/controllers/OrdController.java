@@ -44,7 +44,7 @@ public class OrdController {
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @PatchMapping("/{id}")
     public String update(@PathVariable("id") int id, @ModelAttribute("order") Ord order, Authentication auth){
-        ordService.setOrderStatus(id,order);
+        ordService.setOrderStatus(id,order, (CustomerDetails) auth.getPrincipal());
         return "redirect:/order/"+id;
     }
 }

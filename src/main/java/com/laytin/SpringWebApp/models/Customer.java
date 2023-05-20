@@ -141,16 +141,14 @@ public class Customer implements Serializable {
     public void setFullname(String fullname) {
         this.fullname = fullname;
     }
+
     @Override
     public String toString() {
         return "Customer{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
+                ", fullname='" + fullname + '\'' +
                 ", email='" + email + '\'' +
-                ", addresses=" + addresses +
-                ", ords=" + ords +
-                ", cartproducts=" + cartproducts +
                 ", customer_Role=" + customer_Role +
                 '}';
     }

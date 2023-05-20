@@ -84,7 +84,7 @@ public class ProductController {
         if(result.hasErrors()){
             return "products/new";
         }
-        int id = productService.createProduct(product);
+        int id = productService.createProduct(product,(CustomerDetails) auth.getPrincipal());
         return "redirect:/products/"+id;
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
@@ -100,19 +100,19 @@ public class ProductController {
         if(result.hasErrors()){
             return "products/edit";
         }
-        productService.updateProduct(id, product);
+        productService.updateProduct(id, product,(CustomerDetails) auth.getPrincipal());
         return "redirect:/products/"+id;
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @PostMapping("/{id}")
     public String uploadImage(@PathVariable("id")int id, @RequestParam("file") List<MultipartFile> files, Authentication auth){
-        productService.saveImages(id,files);
+        productService.saveImages(id,files,(CustomerDetails) auth.getPrincipal());
         return "redirect:/products/"+id;
     }
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODERATOR')")
     @GetMapping("/{id}/deleteimage/{filename:.+}")
     public String deleteImage(@PathVariable("id") int id,@PathVariable("filename") String filename,RedirectAttributes redirectAttributes, Authentication auth){
-        productService.deleteImage(id,filename,redirectAttributes);
+        productService.deleteImage(id,filename,redirectAttributes, (CustomerDetails) auth.getPrincipal() );
         return "redirect:/products/"+id;
     }
 }

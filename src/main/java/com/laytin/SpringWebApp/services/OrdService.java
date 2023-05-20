@@ -5,6 +5,8 @@ import com.laytin.SpringWebApp.models.*;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import com.laytin.SpringWebApp.repositories.OrdRepository;
 import com.laytin.SpringWebApp.security.CustomerDetails;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,6 +22,7 @@ public class OrdService {
     private final OrdRepository ordRepository;
     private final CustomerRepository customerRepository;
     private final OrdDAO ordDAO;
+    private final Logger log = LogManager.getLogger(OrdService.class);
     @Autowired
     public OrdService(OrdRepository ordRepository, CustomerRepository customerRepository, OrdDAO ordDAO) {
         this.ordRepository = ordRepository;
@@ -43,9 +46,10 @@ public class OrdService {
         return order;
     }
     @Transactional
-    public void setOrderStatus(int id,Ord order){
+    public void setOrderStatus(int id,Ord order, CustomerDetails cd){
         Ord changed = ordRepository.findOrdById(id);
         changed.setStatus(order.getStatus());
         ordRepository.save(changed);
+        log.info("Order status has been updated:"+order.toString()+" by ["+cd.getCustomer().toString()+"]");
     }
 }

@@ -1,10 +1,12 @@
 package com.laytin.SpringWebApp.services;
 
-import com.laytin.SpringWebApp.models.Address;
+import  com.laytin.SpringWebApp.models.Address;
 import com.laytin.SpringWebApp.models.Customer;
 import com.laytin.SpringWebApp.repositories.AddressRepository;
 import com.laytin.SpringWebApp.repositories.CustomerRepository;
 import com.laytin.SpringWebApp.security.CustomerDetails;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +23,6 @@ import java.util.Optional;
 public class AddressService {
     private final AddressRepository addressRepository;
     private final CustomerRepository customerRepository;
-
     @PersistenceContext
     EntityManager entityManager;
     @Autowired
