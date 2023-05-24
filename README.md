@@ -17,9 +17,9 @@ Upon registration, the user receives the role "USER". It is possible to change p
 
 The user with the "MODERATOR" status can change the order status. It also has the ability to create new products, upload related images for a product, modify an existing product.
 
-To get the "MODERATE" status, you must ask a user with the "ADMIN" status to do so. It has the ability to change the user's status and will also inherit all "MODERATOR" access.
+To get the "MODERATOR" status, you must ask a user with the "ADMIN" status to do so. It has the ability to change the user's status and will also inherit all "MODERATOR" access.
 
-For security purposes, protection was organized with the help of Spring Security and the CSFR token. Also, log4g helps to track the actions of moderators and administrators.
+For security purposes, protection was organized with the help of Spring Security and the CSRF token. Also, log4j2 helps to track the actions of moderators and administrators.
 
 # DataBase structure
 ![image](https://github.com/Laytin/SpringWebApp/assets/70861524/47ffa941-4da0-4acf-a302-dbf4ce65007f)
