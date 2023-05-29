@@ -10,6 +10,8 @@ The following frameworks were used during the project:
 - Log4j: control of making IMPORTANT changes to the database
 - Thymeleaf: templates
 - ModelMapper: working with DTO and some another cases
+
+Also solved some 1+n problems by custom HQL queries.
 # About
 An application user has several roles, depending on which he has different capabilities. For example, a regular user cannot change another user's product or role.
 
